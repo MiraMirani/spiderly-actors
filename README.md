@@ -10,7 +10,7 @@ Layout: `site/type/version`
 | `finn/jobs/fast` | Finn.no Job Scraper - Fast, Multi-Keyword (v2) |
 | `linkedin/jobs` | LinkedIn Jobs Scraper - Fast, Multi-Keyword |
 | `nav/jobs` | NAV Arbeidsplassen Job Scraper - Fast, Multi-Keyword |
-| `jobbnorge/jobs` | Jobbnorge scraper (in progress) |
+| `jobbnorge/jobs` | Jobbnorge Job Scraper - Fast, Multi-Keyword |
 
 Each folder is a self-contained Actor (`.actor/`, `Dockerfile`, `package.json`, `src/`, `test/`).
 Run tests inside a folder with `npm test`; deploy with `apify push` from that folder.

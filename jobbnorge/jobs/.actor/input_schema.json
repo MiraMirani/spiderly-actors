@@ -1,0 +1,91 @@
+{
+  "title": "Jobbnorge Job Scraper",
+  "type": "object",
+  "schemaVersion": 1,
+  "properties": {
+    "searchQueries": {
+      "title": "Keywords",
+      "type": "array",
+      "editor": "stringList",
+      "description": "One search per keyword, results are merged and de-duplicated. Example: phd, stipendiat, doktorgrad, research fellow. Leave empty to list all jobs.",
+      "prefill": ["phd", "stipendiat"]
+    },
+    "counties": {
+      "title": "County IDs",
+      "type": "array",
+      "editor": "stringList",
+      "description": "Jobbnorge county IDs (e.g. 3 = Oslo, 11 = Rogaland). Leave empty for all Norway."
+    },
+    "municipalities": {
+      "title": "Municipality IDs",
+      "type": "array",
+      "editor": "stringList",
+      "description": "Jobbnorge municipality IDs (e.g. 1106 = Haugesund)."
+    },
+    "employerIds": {
+      "title": "Employer IDs",
+      "type": "array",
+      "editor": "stringList",
+      "description": "Only jobs from these employers (e.g. 688 = NTNU)."
+    },
+    "categories": {
+      "title": "Category IDs",
+      "type": "array",
+      "editor": "stringList",
+      "description": "Jobbnorge job category IDs."
+    },
+    "period": {
+      "title": "Posted within",
+      "type": "string",
+      "enum": ["All", "Week", "Day"],
+      "default": "All",
+      "description": "Only jobs published in the last week or day."
+    },
+    "daysOld": {
+      "title": "Max age in days",
+      "type": "integer",
+      "minimum": 0,
+      "default": 0,
+      "description": "Extra filter on the publish date, applied after the search. 0 = off. Works together with 'Posted within'."
+    },
+    "language": {
+      "title": "Language",
+      "type": "integer",
+      "enum": [1, 2],
+      "enumTitles": ["Norwegian (1)", "English (2)"],
+      "default": 1,
+      "description": "Language for the listing and, when available, the ad text."
+    },
+    "sortBy": {
+      "title": "Sort by",
+      "type": "string",
+      "enum": ["Published", "Deadline", "Employer"],
+      "default": "Published"
+    },
+    "maxResults": {
+      "title": "Max results",
+      "type": "integer",
+      "minimum": 0,
+      "default": 100,
+      "description": "0 = no limit."
+    },
+    "includeDetails": {
+      "title": "Include full ad text",
+      "type": "boolean",
+      "default": false,
+      "description": "Fetch each ad for description, reference, contacts and apply link (one extra request per job)."
+    },
+    "startUrls": {
+      "title": "Start URLs (optional)",
+      "type": "array",
+      "editor": "requestListSources",
+      "description": "Jobbnorge search URLs (jobbnorge.no/search?term=...) or single ad URLs (jobbnorge.no/ledige-stillinger/stilling/<id>)."
+    },
+    "proxyConfiguration": {
+      "title": "Proxy",
+      "type": "object",
+      "editor": "proxy",
+      "description": "Not needed normally."
+    }
+  }
+}

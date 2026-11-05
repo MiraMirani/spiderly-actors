@@ -1,0 +1,37 @@
+{
+  "actorSpecification": 1,
+  "name": "jobbnorge-job-scraper-fast-multi-keyword",
+  "title": "Jobbnorge Job Scraper - Fast, Multi-Keyword",
+  "description": "Fast scraper for jobbnorge.no (academic, research and public-sector jobs in Norway): multiple keywords, county/municipality/employer filters, PhD/stipendiat search, full ad text and contacts.",
+  "version": "1.0",
+  "buildTag": "latest",
+  "input": "./input_schema.json",
+  "dockerfile": "../Dockerfile",
+  "defaultRunOptions": { "build": "latest", "memoryMbytes": 256, "timeoutSecs": 3600 },
+  "storages": {
+    "dataset": {
+      "actorSpecification": 1,
+      "views": {
+        "jobs": {
+          "title": "Jobs",
+          "transformation": { "fields": ["title", "employer", "department", "location", "county", "published", "deadline", "jobScope", "jobType", "url"] },
+          "display": {
+            "component": "table",
+            "properties": {
+              "title": { "label": "Title" },
+              "employer": { "label": "Employer" },
+              "department": { "label": "Department" },
+              "location": { "label": "Location" },
+              "county": { "label": "County" },
+              "published": { "label": "Posted" },
+              "deadline": { "label": "Deadline" },
+              "jobScope": { "label": "Scope" },
+              "jobType": { "label": "Job type" },
+              "url": { "label": "Link", "format": "link" }
+            }
+          }
+        }
+      }
+    }
+  }
+}
