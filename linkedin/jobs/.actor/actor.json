@@ -1,0 +1,67 @@
+{
+  "actorSpecification": 1,
+  "name": "linkedin-jobs-scraper-fast",
+  "title": "LinkedIn Jobs Scraper - Fast, Multi-Keyword",
+  "description": "Scrape public LinkedIn job listings by keyword, location and filters: full descriptions, seniority, applicants, company IDs and apply links. No login.",
+  "version": "1.0",
+  "buildTag": "latest",
+  "input": "./input_schema.json",
+  "dockerfile": "../Dockerfile",
+  "defaultRunOptions": {
+    "build": "latest",
+    "memoryMbytes": 1024,
+    "timeoutSecs": 3600
+  },
+  "storages": {
+    "dataset": {
+      "actorSpecification": 1,
+      "views": {
+        "jobs": {
+          "title": "Jobs",
+          "transformation": {
+            "fields": [
+              "title",
+              "company",
+              "location",
+              "postedDate",
+              "employmentType",
+              "seniorityLevel",
+              "applicants",
+              "url"
+            ]
+          },
+          "display": {
+            "component": "table",
+            "properties": {
+              "title": {
+                "label": "Title"
+              },
+              "company": {
+                "label": "Company"
+              },
+              "location": {
+                "label": "Location"
+              },
+              "postedDate": {
+                "label": "Posted"
+              },
+              "employmentType": {
+                "label": "Type"
+              },
+              "seniorityLevel": {
+                "label": "Seniority"
+              },
+              "applicants": {
+                "label": "Applicants"
+              },
+              "url": {
+                "label": "Link",
+                "format": "link"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

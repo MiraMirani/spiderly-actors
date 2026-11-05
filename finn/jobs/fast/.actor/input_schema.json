@@ -1,0 +1,61 @@
+{
+  "title": "Finn.no Job Scraper input",
+  "type": "object",
+  "schemaVersion": 1,
+  "properties": {
+    "startUrls": {
+      "title": "Start URLs",
+      "type": "array",
+      "description": "Finn job search URLs (filters included), e.g. https://www.finn.no/job/search?q=utvikler&location=1.20001.20012. Optional - you can use keywords instead.",
+      "editor": "requestListSources"
+    },
+    "keywords": {
+      "title": "Keywords",
+      "type": "array",
+      "description": "One or more search terms, e.g. utvikler, developer, backend. Each keyword is searched separately and duplicate jobs are removed.",
+      "editor": "stringList",
+      "prefill": ["utvikler"]
+    },
+    "keyword": {
+      "title": "Single keyword (optional)",
+      "type": "string",
+      "description": "Shortcut for one search term. Added to the Keywords list.",
+      "editor": "textfield"
+    },
+    "location": {
+      "title": "Location",
+      "type": "string",
+      "description": "County or municipality name (e.g. Rogaland, Haugesund, Oslo) or a Finn location code like 1.20001.20012. Applied to every keyword; ignored for Start URLs.",
+      "editor": "textfield"
+    },
+    "maxJobs": {
+      "title": "Maximum number of jobs",
+      "type": "integer",
+      "description": "Total number of jobs to save across all keywords and URLs.",
+      "default": 50,
+      "minimum": 1,
+      "maximum": 5000
+    },
+    "maxPages": {
+      "title": "Maximum search pages per search",
+      "type": "integer",
+      "description": "Safety limit on result pages per search (about 50 jobs per page).",
+      "default": 20,
+      "minimum": 1,
+      "maximum": 100
+    },
+    "includeDetails": {
+      "title": "Fetch full ad details",
+      "type": "boolean",
+      "description": "Adds the full description (text and HTML), employer website, employment type and exact deadline. Turn off for the fastest basic listing.",
+      "default": true
+    },
+    "proxyConfiguration": {
+      "title": "Proxy configuration",
+      "type": "object",
+      "description": "Optional. Works without a proxy; enable Apify Proxy only if Finn blocks your requests.",
+      "editor": "proxy",
+      "default": {}
+    }
+  }
+}

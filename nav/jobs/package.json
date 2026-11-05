@@ -1,0 +1,9 @@
+{
+  "name": "nav-job-scraper",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Fast NAV Arbeidsplassen (arbeidsplassen.nav.no) job scraper",
+  "scripts": { "start": "node src/main.js", "test": "node --test test/parse.test.js" },
+  "dependencies": { "apify": "^3.2.0", "got-scraping": "^4.0.0" },
+  "license": "ISC"
+}

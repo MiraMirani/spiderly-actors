@@ -1,0 +1,59 @@
+{
+  "title": "Finn.no Job Scraper input",
+  "type": "object",
+  "schemaVersion": 1,
+  "properties": {
+    "startUrls": {
+      "title": "Start URLs",
+      "type": "array",
+      "description": "Finn job search URLs, e.g. https://www.finn.no/job/search?q=utvikler&location=1.20001.20012. Leave empty to build a search from Keyword/Location.",
+      "editor": "requestListSources",
+      "prefill": [
+        {
+          "url": "https://www.finn.no/job/search?q=utvikler"
+        }
+      ]
+    },
+    "keyword": {
+      "title": "Keyword",
+      "type": "string",
+      "description": "Search text (used when no Start URLs are given).",
+      "editor": "textfield"
+    },
+    "location": {
+      "title": "Location",
+      "type": "string",
+      "description": "County or municipality name (e.g. Rogaland, Haugesund, Oslo) or a Finn location code like 1.20001.20012. Used only when no Start URLs are given.",
+      "editor": "textfield"
+    },
+    "maxJobs": {
+      "title": "Maximum number of jobs",
+      "type": "integer",
+      "description": "Total across all start URLs.",
+      "default": 50,
+      "minimum": 1,
+      "maximum": 5000
+    },
+    "maxPages": {
+      "title": "Maximum search pages per URL",
+      "type": "integer",
+      "default": 5,
+      "minimum": 1,
+      "maximum": 40,
+      "description": "Stop after this many result pages per start URL (about 50 ads per page)."
+    },
+    "includeDetails": {
+      "title": "Fetch full ad details",
+      "type": "boolean",
+      "description": "Opens every ad for description, deadline and employment type. Slower, more requests.",
+      "default": true
+    },
+    "proxyConfiguration": {
+      "title": "Proxy configuration",
+      "type": "object",
+      "description": "Optional. Try without a proxy first; enable if Finn blocks requests.",
+      "editor": "proxy",
+      "default": {}
+    }
+  }
+}

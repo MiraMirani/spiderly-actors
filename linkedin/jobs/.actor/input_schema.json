@@ -1,0 +1,247 @@
+{
+  "title": "LinkedIn Jobs Scraper input",
+  "type": "object",
+  "schemaVersion": 1,
+  "properties": {
+    "keywords": {
+      "title": "Keywords",
+      "type": "array",
+      "description": "One or more search terms (job title, skill or company). Every keyword is searched separately and duplicates are removed.",
+      "editor": "stringList",
+      "prefill": [
+        "software engineer"
+      ]
+    },
+    "keyword": {
+      "title": "Single keyword (optional)",
+      "type": "string",
+      "description": "Shortcut for one search term. Added to the Keywords list.",
+      "editor": "textfield"
+    },
+    "locations": {
+      "title": "Locations",
+      "type": "array",
+      "description": "One or more locations, for example Norway, Oslo, Stockholm or Remote. Each keyword is searched in each location.",
+      "editor": "stringList",
+      "prefill": [
+        "Norway"
+      ]
+    },
+    "location": {
+      "title": "Single location (optional)",
+      "type": "string",
+      "description": "Shortcut for one location. Added to the Locations list.",
+      "editor": "textfield"
+    },
+    "geoId": {
+      "title": "LinkedIn geoId (optional)",
+      "type": "string",
+      "description": "Exact LinkedIn location id (for example 103819153 for Norway). Overrides name-based matching when you need precision.",
+      "editor": "textfield"
+    },
+    "datePosted": {
+      "title": "Date posted",
+      "type": "string",
+      "description": "Only jobs posted within this period.",
+      "editor": "select",
+      "default": "any",
+      "enum": [
+        "any",
+        "r86400",
+        "r604800",
+        "r2592000"
+      ],
+      "enumTitles": [
+        "Any time",
+        "Past 24 hours",
+        "Past week",
+        "Past month"
+      ]
+    },
+    "jobType": {
+      "title": "Job type",
+      "type": "array",
+      "description": "Only these employment types. Leave empty for all.",
+      "editor": "select",
+      "items": {
+        "type": "string",
+        "enum": [
+          "fulltime",
+          "parttime",
+          "contract",
+          "temporary",
+          "internship",
+          "volunteer",
+          "other"
+        ],
+        "enumTitles": [
+          "Full-time",
+          "Part-time",
+          "Contract",
+          "Temporary",
+          "Internship",
+          "Volunteer",
+          "Other"
+        ]
+      }
+    },
+    "experienceLevel": {
+      "title": "Experience level",
+      "type": "array",
+      "description": "Only these seniority levels. Leave empty for all.",
+      "editor": "select",
+      "items": {
+        "type": "string",
+        "enum": [
+          "internship",
+          "entry",
+          "associate",
+          "mid-senior",
+          "director",
+          "executive"
+        ],
+        "enumTitles": [
+          "Internship",
+          "Entry level",
+          "Associate",
+          "Mid-Senior level",
+          "Director",
+          "Executive"
+        ]
+      }
+    },
+    "workType": {
+      "title": "Workplace type",
+      "type": "array",
+      "description": "On-site, remote or hybrid. Leave empty for all.",
+      "editor": "select",
+      "items": {
+        "type": "string",
+        "enum": [
+          "onsite",
+          "remote",
+          "hybrid"
+        ],
+        "enumTitles": [
+          "On-site",
+          "Remote",
+          "Hybrid"
+        ]
+      }
+    },
+    "easyApply": {
+      "title": "Easy Apply only",
+      "type": "boolean",
+      "description": "Only include jobs with LinkedIn's Easy Apply option.",
+      "default": false
+    },
+    "under10Applicants": {
+      "title": "Under 10 applicants",
+      "type": "boolean",
+      "description": "Only include jobs that have fewer than 10 applicants so far.",
+      "default": false
+    },
+    "companyName": {
+      "title": "Company names",
+      "type": "array",
+      "description": "Keep only jobs whose company name contains one of these names (case-insensitive). Applied after scraping, so combine with a higher limit.",
+      "editor": "stringList"
+    },
+    "companyId": {
+      "title": "Company IDs",
+      "type": "array",
+      "description": "Only jobs from these LinkedIn company IDs. Applied by LinkedIn itself, so it is exact and fast.",
+      "editor": "stringList"
+    },
+    "titleInclude": {
+      "title": "Title must include",
+      "type": "array",
+      "description": "Keep only jobs whose title contains all words of at least one of these phrases (case-insensitive, word order does not matter).",
+      "editor": "stringList"
+    },
+    "titleExclude": {
+      "title": "Title must not include",
+      "type": "array",
+      "description": "Drop jobs whose title contains all words of at least one of these phrases (case-insensitive, word order does not matter).",
+      "editor": "stringList"
+    },
+    "skipJobId": {
+      "title": "Skip job IDs",
+      "type": "array",
+      "description": "Job IDs to leave out, for example jobs you collected in an earlier run.",
+      "editor": "stringList"
+    },
+    "sortBy": {
+      "title": "Sort by",
+      "type": "string",
+      "description": "Order of search results.",
+      "editor": "select",
+      "default": "relevance",
+      "enum": [
+        "relevance",
+        "recent"
+      ],
+      "enumTitles": [
+        "Most relevant",
+        "Most recent"
+      ]
+    },
+    "limit": {
+      "title": "Maximum number of jobs",
+      "type": "integer",
+      "description": "Total jobs to save across all searches.",
+      "default": 100,
+      "minimum": 1,
+      "maximum": 5000
+    },
+    "maxPages": {
+      "title": "Maximum result pages per search",
+      "type": "integer",
+      "description": "Safety limit. Each page holds 10 jobs and LinkedIn shows about 1,000 results per search.",
+      "default": 100,
+      "minimum": 1,
+      "maximum": 100
+    },
+    "includeDetails": {
+      "title": "Fetch full job details",
+      "type": "boolean",
+      "description": "Adds the full description (text and HTML), seniority, employment type, industries, applicants, company ID and apply link. Turn off for the fastest basic listing.",
+      "default": true
+    },
+    "maxRequestsPerMinute": {
+      "title": "Maximum requests per minute",
+      "type": "integer",
+      "description": "Speed limit that keeps LinkedIn from blocking you. The default works well with Apify Proxy; lower it if you see rate-limit warnings.",
+      "default": 240,
+      "minimum": 10,
+      "maximum": 600
+    },
+    "urlParam": {
+      "title": "Extra URL parameters",
+      "type": "array",
+      "description": "Advanced: extra LinkedIn search parameters as key=value, for example f_SB2=4 for a salary bracket.",
+      "editor": "stringList"
+    },
+    "startUrls": {
+      "title": "LinkedIn search URLs",
+      "type": "array",
+      "description": "Optional. Paste normal LinkedIn job search URLs (linkedin.com/jobs/search/?...). Their filters are reused.",
+      "editor": "requestListSources"
+    },
+    "proxyConfiguration": {
+      "title": "Proxy configuration",
+      "type": "object",
+      "description": "LinkedIn rate-limits single IP addresses. Residential Apify Proxy is recommended for anything beyond a few dozen jobs.",
+      "editor": "proxy",
+      "default": {
+        "useApifyProxy": true
+      },
+      "prefill": {
+        "useApifyProxy": true,
+        "apifyProxyGroups": [
+          "RESIDENTIAL"
+        ]
+      }
+    }
+  }
+}

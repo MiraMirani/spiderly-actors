@@ -1,0 +1,155 @@
+{
+  "title": "NAV Arbeidsplassen Job Scraper input",
+  "type": "object",
+  "schemaVersion": 1,
+  "properties": {
+    "keywords": {
+      "title": "Keywords",
+      "type": "array",
+      "description": "One or more search terms, e.g. utvikler, sykepleier, ingeniør. Each keyword is searched separately and duplicate jobs are removed. Leave empty to list all jobs.",
+      "editor": "stringList",
+      "prefill": ["utvikler"]
+    },
+    "keyword": {
+      "title": "Single keyword (optional)",
+      "type": "string",
+      "description": "Shortcut for one search term. Added to the Keywords list.",
+      "editor": "textfield"
+    },
+    "counties": {
+      "title": "Counties (fylker)",
+      "type": "array",
+      "description": "Only jobs in these counties. Leave empty for all of Norway.",
+      "editor": "select",
+      "items": { "type": "string", "enum": ["AGDER", "AKERSHUS", "BUSKERUD", "FINNMARK", "INNLANDET", "MØRE OG ROMSDAL", "NORDLAND", "OSLO", "ROGALAND", "SVALBARD", "TELEMARK", "TROMS", "TRØNDELAG", "VESTFOLD", "VESTLAND", "ØSTFOLD"] }
+    },
+    "municipalities": {
+      "title": "Municipalities (kommuner)",
+      "type": "array",
+      "description": "Format COUNTY.MUNICIPALITY, e.g. ROGALAND.HAUGESUND, OSLO.OSLO, TRØNDELAG.TRONDHEIM.",
+      "editor": "stringList"
+    },
+    "occupations": {
+      "title": "Occupation categories",
+      "type": "array",
+      "description": "Broad occupation categories.",
+      "editor": "select",
+      "items": { "type": "string", "enum": ["Bygg og anlegg", "Helse og sosial", "Håndverkere", "Industri og produksjon", "IT", "Kontor og økonomi", "Kultur og kreative yrker", "Natur og miljø", "Reiseliv og mat", "Salg og service", "Sikkerhet og beredskap", "Transport og lager", "Utdanning", "Uoppgitt/ ikke identifiserbare"] }
+    },
+    "engagementTypes": {
+      "title": "Engagement types (ansettelsesform)",
+      "type": "array",
+      "description": "Employment type.",
+      "editor": "select",
+      "items": { "type": "string", "enum": ["Fast", "Vikariat", "Engasjement", "Prosjekt", "Sesong", "Åremål", "Trainee", "Feriejobb", "Selvstendig næringsdrivende", "Annet"] }
+    },
+    "extents": {
+      "title": "Full-time / part-time",
+      "type": "array",
+      "description": "Extent of the position.",
+      "editor": "select",
+      "items": { "type": "string", "enum": ["Heltid", "Deltid"] }
+    },
+    "sector": {
+      "title": "Sector",
+      "type": "string",
+      "description": "Public or private sector. Leave empty for both.",
+      "editor": "select",
+      "enum": ["", "Privat", "Offentlig"],
+      "default": ""
+    },
+    "remote": {
+      "title": "Home office",
+      "type": "string",
+      "description": "Home-office policy. Leave empty for any.",
+      "editor": "select",
+      "enum": ["", "Kun hjemmekontor", "Delvis hjemmekontor", "Ingen mulighet for hjemmekontor"],
+      "default": ""
+    },
+    "education": {
+      "title": "Education level",
+      "type": "array",
+      "description": "Required education level.",
+      "editor": "select",
+      "items": { "type": "string", "enum": ["Ingen krav", "Videregående", "Fagbrev", "Fagskole", "Bachelor", "Master", "Forskningsgrad"] }
+    },
+    "experience": {
+      "title": "Work experience",
+      "type": "array",
+      "description": "Required work experience.",
+      "editor": "select",
+      "items": { "type": "string", "enum": ["ingen krav til arbeidserfaring", "noe arbeidserfaring", "mye arbeidserfaring"] }
+    },
+    "workLanguages": {
+      "title": "Work languages",
+      "type": "array",
+      "description": "Working language of the job.",
+      "editor": "select",
+      "items": { "type": "string", "enum": ["Norsk", "Engelsk", "Skandinavisk", "Samisk"] }
+    },
+    "needDriversLicense": {
+      "title": "Driver's licence",
+      "type": "string",
+      "description": "true = licence required, false = not required. Leave empty for any.",
+      "editor": "select",
+      "enum": ["", "true", "false"],
+      "default": ""
+    },
+    "publishedWithin": {
+      "title": "Published within",
+      "type": "string",
+      "description": "Only jobs published within this window. Leave empty for all.",
+      "editor": "select",
+      "enum": ["", "now/d", "now-3d", "now-7d"],
+      "enumTitles": ["Any time", "Today", "Last 3 days", "Last 7 days"],
+      "default": ""
+    },
+    "hasSuperraskSoknad": {
+      "title": "Quick apply only",
+      "type": "boolean",
+      "description": "Only jobs with NAV's quick-apply (Superrask søknad).",
+      "default": false
+    },
+    "isSummerJob": {
+      "title": "Summer jobs only",
+      "type": "boolean",
+      "description": "Only jobs flagged as summer jobs.",
+      "default": false
+    },
+    "isUnder18": {
+      "title": "Suitable for under 18",
+      "type": "boolean",
+      "description": "Only jobs suitable for people under 18.",
+      "default": false
+    },
+    "sortBy": {
+      "title": "Sort order",
+      "type": "string",
+      "description": "How NAV sorts the results.",
+      "editor": "select",
+      "enum": ["published", "relevant", "expires"],
+      "enumTitles": ["Newest first", "Most relevant", "Application deadline"],
+      "default": "published"
+    },
+    "maxResults": {
+      "title": "Maximum number of jobs",
+      "type": "integer",
+      "description": "Total number of jobs to save across all keywords. 0 = no limit (all matching jobs).",
+      "default": 100,
+      "minimum": 0
+    },
+    "includeDetails": {
+      "title": "Fetch full ad details",
+      "type": "boolean",
+      "description": "Adds the full description (text and HTML), employment type, work hours, start date, employer details, contact application link and AI competences. Turn off for the fastest basic listing.",
+      "default": true
+    },
+    "proxyConfiguration": {
+      "title": "Proxy configuration",
+      "type": "object",
+      "description": "Optional. NAV is open and works without a proxy; enable Apify Proxy only if you get blocked or rate limited.",
+      "editor": "proxy",
+      "default": {}
+    }
+  }
+}

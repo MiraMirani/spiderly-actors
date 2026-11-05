@@ -1,0 +1,35 @@
+{
+  "actorSpecification": 1,
+  "name": "nav-arbeidsplassen-job-scraper",
+  "title": "NAV Arbeidsplassen Job Scraper - Fast, Multi-Keyword",
+  "description": "Fast scraper for arbeidsplassen.nav.no: multiple keywords, county/municipality and category filters, full descriptions, AI summaries and tags.",
+  "version": "1.0",
+  "buildTag": "latest",
+  "input": "./input_schema.json",
+  "dockerfile": "../Dockerfile",
+  "defaultRunOptions": { "build": "latest", "memoryMbytes": 512, "timeoutSecs": 3600 },
+  "storages": {
+    "dataset": {
+      "actorSpecification": 1,
+      "views": {
+        "jobs": {
+          "title": "Jobs",
+          "transformation": { "fields": ["title", "employer", "city", "county", "published", "applicationDue", "engagementType", "url"] },
+          "display": {
+            "component": "table",
+            "properties": {
+              "title": { "label": "Title" },
+              "employer": { "label": "Employer" },
+              "city": { "label": "City" },
+              "county": { "label": "County" },
+              "published": { "label": "Posted" },
+              "applicationDue": { "label": "Deadline" },
+              "engagementType": { "label": "Type" },
+              "url": { "label": "Link", "format": "link" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

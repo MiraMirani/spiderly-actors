@@ -1,0 +1,9 @@
+{
+  "name": "finn-job-scraper",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Fast Finn.no job scraper",
+  "scripts": { "start": "node src/main.js", "test": "node --test test/parse.test.js" },
+  "dependencies": { "apify": "^3.2.0", "crawlee": "^3.11.0", "got-scraping": "^4.0.0" },
+  "license": "ISC"
+}

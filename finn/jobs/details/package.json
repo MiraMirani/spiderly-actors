@@ -1,0 +1,9 @@
+{
+  "name": "finn-job-scraper",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Scrapes job ads from finn.no/job search pages",
+  "scripts": { "start": "node src/main.js", "test": "node --test test/parse.test.js" },
+  "dependencies": { "apify": "^3.2.0", "crawlee": "^3.11.0", "cheerio": "^1.0.0", "got-scraping": "^4.0.0" },
+  "license": "ISC"
+}

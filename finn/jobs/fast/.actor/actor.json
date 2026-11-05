@@ -1,0 +1,34 @@
+{
+  "actorSpecification": 1,
+  "name": "finn-no-job-scraper",
+  "title": "Finn.no Job Scraper - Fast, Multi-Keyword",
+  "description": "Fast Finn.no job scraper: multiple keywords, locations by name, full descriptions, deadlines and coordinates.",
+  "version": "1.0",
+  "buildTag": "latest",
+  "input": "./input_schema.json",
+  "dockerfile": "../Dockerfile",
+  "defaultRunOptions": { "build": "latest", "memoryMbytes": 1024, "timeoutSecs": 3600 },
+  "storages": {
+    "dataset": {
+      "actorSpecification": 1,
+      "views": {
+        "jobs": {
+          "title": "Jobs",
+          "transformation": { "fields": ["title", "company", "location", "published", "deadline", "employmentType", "url"] },
+          "display": {
+            "component": "table",
+            "properties": {
+              "title": { "label": "Title" },
+              "company": { "label": "Employer" },
+              "location": { "label": "Location" },
+              "published": { "label": "Posted" },
+              "deadline": { "label": "Deadline" },
+              "employmentType": { "label": "Type" },
+              "url": { "label": "Link", "format": "link" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

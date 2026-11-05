@@ -1,0 +1,58 @@
+{
+  "actorSpecification": 1,
+  "name": "finn-job-scraper",
+  "title": "Finn.no Job Scraper",
+  "description": "Scrapes job ads from Finn.no search pages with optional full ad details.",
+  "version": "0.1",
+  "buildTag": "latest",
+  "input": "./input_schema.json",
+  "dockerfile": "../Dockerfile",
+  "storages": {
+    "dataset": {
+      "actorSpecification": 1,
+      "views": {
+        "jobs": {
+          "title": "Jobs",
+          "transformation": {
+            "fields": [
+              "title",
+              "company",
+              "location",
+              "published",
+              "deadline",
+              "employmentType",
+              "url"
+            ]
+          },
+          "display": {
+            "component": "table",
+            "properties": {
+              "title": {
+                "label": "Title"
+              },
+              "company": {
+                "label": "Employer"
+              },
+              "location": {
+                "label": "Location"
+              },
+              "published": {
+                "label": "Posted"
+              },
+              "deadline": {
+                "label": "Deadline"
+              },
+              "url": {
+                "label": "Link",
+                "format": "link"
+              },
+              "employmentType": {
+                "label": "Type"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
