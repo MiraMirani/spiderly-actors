@@ -51,16 +51,17 @@
     "language": {
       "title": "Language",
       "type": "integer",
-      "enum": [1, 2],
-      "enumTitles": ["Norwegian (1)", "English (2)"],
+      "minimum": 1,
+      "maximum": 2,
       "default": 1,
-      "description": "Language for the listing and, when available, the ad text."
+      "description": "1 = Norwegian, 2 = English. Language for the listing and, when available, the ad text."
     },
     "sortBy": {
       "title": "Sort by",
       "type": "string",
       "enum": ["Published", "Deadline", "Employer"],
-      "default": "Published"
+      "default": "Published",
+      "description": "Order of the results."
     },
     "maxResults": {
       "title": "Max results",
