@@ -1,0 +1,6 @@
+Generated with the built-in image_gen tool on 2026-11-05.
+Reference: assets/spiderly-icon.png (the repository's existing mascot).
+Saved artwork: assets/actors/linkedin-jobs.png.
+
+Final prompt:
+Create an original polished square 1024x1024 Apify actor cover for Spiderly's LinkedIn Jobs scraper. Use the attached image only as a reference for Spiderly's purple, big-eyed, friendly spider mascot, pale pink background and dark plum outline. New composition: the spider as a cheerful researcher holding a magnifying glass over a neat stack of miniature white job cards, a tiny purple briefcase, and a small blue professional-network connection motif. Sophisticated playful flat vector-like illustration with restrained subtle shadows, crisp clean shapes, generous safe margins, readable at 128px thumbnail. Background pale blush pink, purple and plum mascot, accents electric periwinkle and white. Exact text on top, clean bold sans serif: 'LINKEDIN JOBS'. Small label on bottom: 'SPIDERLY'. No LinkedIn logo, no Apify logo, no borrowed assets, no additional text, no watermark. Opaque full square background. This image will serve both a README cover and a store icon, so keep key mascot and job motif centered within the middle 70% of the frame.

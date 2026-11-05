@@ -1,0 +1,9 @@
+{
+  "repository": "MiraMirani/spiderly-actors",
+  "assetRevision": "86aefbfdf313e9f2898dad5a44408a5f4d62316d",
+  "defaultImage": "assets/spiderly-icon.png",
+  "actors": {
+    "linkedin-jobs-scraper-fast": "assets/actors/linkedin-jobs.png",
+    "linkedin-jobs-scraper-details": "assets/actors/linkedin-jobs.png"
+  }
+}
