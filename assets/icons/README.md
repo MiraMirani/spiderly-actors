@@ -1,6 +1,8 @@
 # Actor icons
 
-Square 512 × 512 PNGs for Apify Actor avatars, with matching editable SVGs. All icons use a white background and consistent spacing so the source platform remains recognizable at small sizes.
+The current Actor avatars are the 512 × 512 PNGs in `spiderly/`: the Spiderly mascot on pink, with the relevant platform mark in a small white badge. Use the same FINN icon for both FINN Actors. `spiderly/jobs.png` is the fallback for future platforms. `spiderly/preview.png` shows the full set; `spiderly/prompts.md` records the built-in image-generation prompts.
+
+The plain platform PNGs and editable SVGs below are preserved as source references. They use a white background and consistent spacing.
 
 - `finn.png`: FINN's compact brand mark, used for both FINN Actors. [Source SVG](https://assets.vend.com/pkg/@warp-ds/brand-logos/~1/finn-small.svg), linked from [FINN.no](https://www.finn.no/).
 - `linkedin.png`: LinkedIn's blue “in” mark. [Source SVG](https://static.licdn.com/aero-v1/sc/h/akt4ae504epesldzj74dzred8), linked as the favicon on [LinkedIn](https://www.linkedin.com/).
@@ -10,4 +12,4 @@ Square 512 × 512 PNGs for Apify Actor avatars, with matching editable SVGs. All
 
 Source marks were retrieved on 2026-11-05. Their respective owners retain rights to them. They identify the sources supported by these independent Actors.
 
-The larger Spiderly mascot remains available in `assets/spiderly-icon.png` for account branding. Actor avatars use the compact site icons instead.
+The original Spiderly mascot remains available in `assets/spiderly-icon.png`. The combined PNGs are separate bitmap assets; the original files are unchanged.
