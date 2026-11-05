@@ -1,7 +1,7 @@
 # LinkedIn Jobs Scraper - Fast, Multi-Keyword
 
 <!-- actor-cover:start -->
-<img src="https://raw.githubusercontent.com/MiraMirani/spiderly-actors/d2527d82c44f61295a6fd6738dd3eb7444acc9d4/assets/icons/spiderly/linkedin.png" alt="LinkedIn Jobs Scraper - Fast, Multi-Keyword — Spiderly" width="128" height="128">
+<img src="https://raw.githubusercontent.com/MiraMirani/spiderly-actors/d83e94bd80e05c58307e5c10b7a1dfd8e265bf2e/assets/icons/spiderly-large/linkedin.png" alt="LinkedIn Jobs Scraper - Fast, Multi-Keyword — Spiderly" width="128" height="128">
 <!-- actor-cover:end -->
 
 Scrape **public LinkedIn job listings** by keyword, location and filters, with no login and no cookies. Search several keywords and several locations in one run, filter by date, job type, seniority, remote/hybrid and more, and get full descriptions, applicant counts, company IDs and apply links as clean JSON, CSV or Excel.

@@ -1,12 +1,12 @@
 {
   "repository": "MiraMirani/spiderly-actors",
-  "assetRevision": "d2527d82c44f61295a6fd6738dd3eb7444acc9d4",
-  "defaultImage": "assets/icons/spiderly/jobs.png",
+  "assetRevision": "d83e94bd80e05c58307e5c10b7a1dfd8e265bf2e",
+  "defaultImage": "assets/icons/spiderly-large/jobs.png",
   "sites": {
-    "finn": "assets/icons/spiderly/finn.png",
-    "linkedin": "assets/icons/spiderly/linkedin.png",
-    "nav": "assets/icons/spiderly/nav.png",
-    "jobbnorge": "assets/icons/spiderly/jobbnorge.png"
+    "finn": "assets/icons/spiderly-large/finn.png",
+    "linkedin": "assets/icons/spiderly-large/linkedin.png",
+    "nav": "assets/icons/spiderly-large/nav.png",
+    "jobbnorge": "assets/icons/spiderly-large/jobbnorge.png"
   },
   "actors": {}
 }

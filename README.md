@@ -17,9 +17,9 @@ Run tests inside a folder with `npm test`; deploy with `apify push` from that fo
 
 ## Actor icons
 
-Each Actor uses the Spiderly mascot with a small source-platform badge. Both FINN versions share the FINN + Spiderly icon; LinkedIn, NAV and Jobbnorge have their own. The upload-ready PNG files are 512 × 512 and live in `assets/icons/spiderly/`. The original mascot and plain platform icons remain available separately.
+Each Actor uses its platform mark together with the larger, complete Spiderly mascot and its visible legs. Both FINN versions share the FINN + Spiderly icon; LinkedIn, NAV and Jobbnorge have their own. The upload-ready PNG files are 512 × 512 and live in `assets/icons/spiderly-large/`. The original mascot, plain platform icons and previous compositions remain available separately.
 
-`assets/actor-media.json` maps each site folder to its icon. Future Actors under the same site inherit that icon. New sites use Spiderly with a purple briefcase badge until a dedicated icon is added. An entry under `actors` can override one Actor by name.
+`assets/actor-media.json` maps each site folder to its icon. Future Actors under the same site inherit that icon. New sites use the general-jobs version with a briefcase and the same larger Spiderly mascot until a dedicated icon is added. An entry under `actors` can override one Actor by name.
 
 After adding an Actor or changing its icon, run:
 

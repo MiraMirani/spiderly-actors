@@ -1,7 +1,7 @@
 # Finn.no Job Scraper v2 - Fast, Multi-Keyword
 
 <!-- actor-cover:start -->
-<img src="https://raw.githubusercontent.com/MiraMirani/spiderly-actors/d2527d82c44f61295a6fd6738dd3eb7444acc9d4/assets/icons/spiderly/finn.png" alt="Finn.no Job Scraper - Fast, Multi-Keyword — Spiderly" width="128" height="128">
+<img src="https://raw.githubusercontent.com/MiraMirani/spiderly-actors/d83e94bd80e05c58307e5c10b7a1dfd8e265bf2e/assets/icons/spiderly-large/finn.png" alt="Finn.no Job Scraper - Fast, Multi-Keyword — Spiderly" width="128" height="128">
 <!-- actor-cover:end -->
 
 Scrape job ads from **Finn.no**, Norway's largest job board, in seconds. Search several keywords in one run, filter by county or city by name, and get full descriptions, deadlines, employers and coordinates as clean JSON, CSV or Excel.
