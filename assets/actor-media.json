@@ -1,0 +1,12 @@
+{
+  "repository": "MiraMirani/spiderly-actors",
+  "assetRevision": "d8011536d64af8d63c55477dff878452d4b948de",
+  "defaultImage": "assets/icons/jobs.png",
+  "sites": {
+    "finn": "assets/icons/finn.png",
+    "linkedin": "assets/icons/linkedin.png",
+    "nav": "assets/icons/nav.png",
+    "jobbnorge": "assets/icons/jobbnorge.png"
+  },
+  "actors": {}
+}
