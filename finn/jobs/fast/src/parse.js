@@ -69,6 +69,24 @@ export function parseSearchPage(html) {
     return { ads, lastPage, total, perPage: ads.length };
 }
 
+/** Contact persons ("Spørsmål om stillingen" cards): name, optional title, phone, email (mailto only; Finn hides emails behind a form). */
+export function parseContacts(html) {
+    const sec = html.match(/<section[^>]*contact-card-section[\s\S]*?<\/section>/);
+    if (!sec) return [];
+    const cards = sec[0].split(/<div[^>]*class="contact-card\b(?![-_])/).slice(1);
+    const out = [];
+    for (const c of cards) {
+        const text = (re) => { const m = c.match(re); return m ? htmlToText(m[1]) : ''; };
+        const name = text(/class="[^"]*contact-card-name[^"]*"[^>]*>([\s\S]*?)<\/p>/);
+        const title = text(/class="[^"]*contact-card-(?:title|role|subtitle)[^"]*"[^>]*>([\s\S]*?)<\/(?:p|span|div)>/);
+        const phone = text(/slot="message"[^>]*>\s*<span[^>]*>([\s\S]*?)<\/span>/).replace(/[^\d+ ]/g, '').trim();
+        const mail = c.match(/href="mailto:([^"?]+)/);
+        const email = mail ? decodeURIComponent(mail[1]).trim() : '';
+        if (name || phone || email) out.push({ name, title, phone, email });
+    }
+    return out;
+}
+
 /** Ad page: JSON-LD JobPosting (Finn wraps it as {"script:ld+json": {...}}). */
 export function parseAdPage(html) {
     let jp = null;
@@ -82,6 +100,7 @@ export function parseAdPage(html) {
         } catch { /* ignore */ }
     }
     if (!jp) return null;
+    const contacts = parseContacts(html);
     const addr = [jp.jobLocation].flat().filter(Boolean).map((l) => l.address).filter(Boolean);
     return {
         title: clean(jp.title),
@@ -93,6 +112,10 @@ export function parseAdPage(html) {
         employmentType: [jp.employmentType].flat().filter(Boolean).join(', '),
         descriptionHtml: jp.description ?? '',
         description: htmlToText(jp.description),
+        contacts,
+        contactName: contacts[0]?.name ?? '',
+        contactPhone: contacts[0]?.phone ?? '',
+        contactEmail: contacts[0]?.email ?? '',
     };
 }
 

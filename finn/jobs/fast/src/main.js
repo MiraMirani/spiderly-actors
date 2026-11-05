@@ -49,6 +49,10 @@ const crawler = new HttpCrawler({
                 employmentType: d.employmentType,
                 description: d.description,
                 descriptionHtml: d.descriptionHtml,
+                contactName: d.contactName,
+                contactPhone: d.contactPhone,
+                contactEmail: d.contactEmail,
+                contacts: d.contacts,
                 scrapedAt: now(),
             } : { ...base, scrapedAt: now() });
             return;

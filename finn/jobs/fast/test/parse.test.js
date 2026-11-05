@@ -31,3 +31,13 @@ test('text + urls + locations', () => {
     assert.equal(buildSearchUrl({ keyword: 'x', location: 'Haugesund' }, map), 'https://www.finn.no/job/search?q=x&location=2.20001.20012.20197');
     assert.equal(withPage('https://www.finn.no/job/search?q=a', 3), 'https://www.finn.no/job/search?q=a&page=3');
 });
+
+test('parseContacts reads name and phone from contact card', async () => {
+    const { parseContacts } = await import('../src/parse.js');
+    const html = '<section class="contact-card-section mt-32" aria-label="x"><div class="contact-card flex items-center"><abbr class="contact-card-avatar">RS</abbr><div class="contact-card-content"><p class="contact-card-name font-bold m-0">Rune Solheim</p><w-attention><button slot="target"></button><span class="flex" slot="message"><span>40 40 33 70</span><w-button><span class="sr-only">Kopier telefonnummer 40 40 33 70</span></w-button></span></w-attention><a aria-label="Kontakt" href="https://www.finn.no/contact/1"></a></div></div></section>';
+    const c = parseContacts(html);
+    assert.equal(c.length, 1);
+    assert.equal(c[0].name, 'Rune Solheim');
+    assert.equal(c[0].phone, '40 40 33 70');
+    assert.equal(c[0].email, '');
+});
