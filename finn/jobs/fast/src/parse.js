@@ -36,6 +36,8 @@ function docToJob(doc) {
         positions: doc.no_of_positions ?? null,
         latitude: doc.coordinates?.lat ?? null,
         longitude: doc.coordinates?.lon ?? null,
+        coordinatesAccuracy: doc.coordinates?.accuracy ?? null,
+        labels: (doc.labels ?? []).map((l) => clean(typeof l === 'string' ? l : (l?.text ?? l?.id))).filter(Boolean),
         logo: doc.logo?.url ?? '',
     };
 }
@@ -60,7 +62,7 @@ export function parseSearchPage(html) {
         for (const m of html.matchAll(/<a[^>]+href="([^"]*\/job\/ad\/(\d+)[^"]*)"[^>]*>([\s\S]*?)<\/a>/g)) {
             const title = htmlToText(m[3]);
             if (!title || found.has(m[2])) continue;
-            found.set(m[2], { id: m[2], url: abs(m[1]), title, company: '', location: '', allLocations: [], published: '', deadline: '', positions: null, latitude: null, longitude: null, logo: '' });
+            found.set(m[2], { id: m[2], url: abs(m[1]), title, company: '', location: '', allLocations: [], published: '', deadline: '', positions: null, latitude: null, longitude: null, coordinatesAccuracy: null, labels: [], logo: '' });
         }
     }
     const ads = [...found.values()];
