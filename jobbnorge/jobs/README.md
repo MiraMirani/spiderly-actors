@@ -1,5 +1,9 @@
 # Jobbnorge Job Scraper - Fast, Multi-Keyword
 
+<!-- actor-cover:start -->
+![Jobbnorge Job Scraper - Fast, Multi-Keyword — Spiderly](https://raw.githubusercontent.com/MiraMirani/spiderly-actors/86aefbfdf313e9f2898dad5a44408a5f4d62316d/assets/spiderly-icon.png)
+<!-- actor-cover:end -->
+
 Scrapes [jobbnorge.no](https://www.jobbnorge.no) (academic, research and public-sector jobs in Norway) through the site's own public JSON endpoints. No browser, very fast, cheap.
 
 ## Features

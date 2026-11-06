@@ -1,0 +1,18 @@
+{
+  "name": "spiderly-linkedin-jobs-details",
+  "version": "1.0.0",
+  "description": "Public LinkedIn job searches, detailed listings and company profiles",
+  "type": "module",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "start": "node src/main.js",
+    "test": "node --test test/*.test.js",
+    "test:live": "node test/live.mjs"
+  },
+  "dependencies": {
+    "apify": "3.7.2",
+    "cheerio": "1.2.0",
+    "got-scraping": "4.2.2"
+  },
+  "license": "ISC"
+}

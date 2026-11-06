@@ -1,0 +1,16 @@
+{
+  "actorSpecification": 1,
+  "name": "linkedin-jobs-scraper-details",
+  "title": "LinkedIn Jobs Scraper — Detailed Jobs & Companies | Spiderly",
+  "description": "Collect public LinkedIn jobs with descriptions, salaries, applicant counts, recruiter information and optional company profiles. Multiple searches, direct job URLs and duplicate removal.",
+  "version": "1.0",
+  "buildTag": "latest",
+  "input": "./input_schema.json",
+  "output": "./output_schema.json",
+  "dockerfile": "../Dockerfile",
+  "readme": "../README.md",
+  "defaultMemoryMbytes": 512,
+  "minMemoryMbytes": 256,
+  "maxMemoryMbytes": 2048,
+  "storages": { "dataset": "./dataset_schema.json" }
+}

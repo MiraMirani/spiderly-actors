@@ -1,5 +1,9 @@
 # NAV Arbeidsplassen Job Scraper - Fast, Multi-Keyword
 
+<!-- actor-cover:start -->
+![NAV Arbeidsplassen Job Scraper - Fast, Multi-Keyword — Spiderly](https://raw.githubusercontent.com/MiraMirani/spiderly-actors/86aefbfdf313e9f2898dad5a44408a5f4d62316d/assets/spiderly-icon.png)
+<!-- actor-cover:end -->
+
 Scrapes job ads from [arbeidsplassen.nav.no](https://arbeidsplassen.nav.no/stillinger), Norway's official public job board (NAV). Fast, no browser: it reads NAV's own search data and the ad pages.
 
 ## What you get
