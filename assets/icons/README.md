@@ -2,6 +2,8 @@
 
 The current Actor avatars are the 512 × 512 PNGs in `spiderly-large/`. They match the approved LinkedIn size test: the larger complete Spiderly mascot, with visible legs and no enclosing circle, paired with the relevant platform mark. Use the same FINN icon for both FINN Actors. `spiderly-large/jobs.png` is the fallback for future platforms. `spiderly-large/preview.png` shows the full set, `thumbnail-preview.png` shows 40px versions, and `prompts.md` records the built-in image-generation prompts.
 
+Jobbnorge uses `spiderly-large/jobbnorge-stacked.png`: its larger coral mark fills the lower portion, with Spiderly perched directly on top. The previous diagonal composition remains available as `spiderly-large/jobbnorge.png`.
+
 The plain platform PNGs and editable SVGs below are preserved as source references. They use a white background and consistent spacing.
 
 - `finn.png`: FINN's compact brand mark, used for both FINN Actors. [Source SVG](https://assets.vend.com/pkg/@warp-ds/brand-logos/~1/finn-small.svg), linked from [FINN.no](https://www.finn.no/).
