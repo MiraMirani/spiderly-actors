@@ -61,6 +61,173 @@
             }
           }
         }
+      },
+      "fields": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "company": {
+            "type": "string"
+          },
+          "companyUrl": {
+            "type": "string"
+          },
+          "companyId": {
+            "type": "string"
+          },
+          "companyLogo": {
+            "type": "string"
+          },
+          "location": {
+            "type": "string"
+          },
+          "postedDate": {
+            "type": "string"
+          },
+          "postedAgo": {
+            "type": "string"
+          },
+          "applicants": {
+            "type": "string"
+          },
+          "seniorityLevel": {
+            "type": "string"
+          },
+          "employmentType": {
+            "type": "string"
+          },
+          "jobFunction": {
+            "type": "string"
+          },
+          "industries": {
+            "type": "string"
+          },
+          "salary": {
+            "type": "string"
+          },
+          "applyType": {
+            "type": "string"
+          },
+          "applyUrl": {
+            "type": "string"
+          },
+          "salaryCurrency": {
+            "type": "string"
+          },
+          "salaryPeriod": {
+            "type": "string"
+          },
+          "posterFullName": {
+            "type": "string"
+          },
+          "posterTitle": {
+            "type": "string"
+          },
+          "posterProfileUrl": {
+            "type": "string"
+          },
+          "posterPhoto": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "descriptionHtml": {
+            "type": "string"
+          },
+          "searchKeywords": {
+            "type": "string"
+          },
+          "searchLocation": {
+            "type": "string"
+          },
+          "scrapedAt": {
+            "type": "string"
+          },
+          "companyWebsite": {
+            "type": "string"
+          },
+          "companyDescription": {
+            "type": "string"
+          },
+          "companyIndustry": {
+            "type": "string"
+          },
+          "companySize": {
+            "type": "string"
+          },
+          "companyHeadquarters": {
+            "type": "string"
+          },
+          "companyFounded": {
+            "type": "string"
+          },
+          "salaryMin": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "salaryMax": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "companyFollowers": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "companyEmployeesOnLinkedIn": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "contactEmails": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "contactPhones": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "rank": {
+            "type": "integer"
+          },
+          "detailsFailed": {
+            "type": "boolean"
+          }
+        }
+      }
+    }
+  },
+  "meta": {
+    "generatedBy": "Codex (GPT-6)"
+  },
+  "output": {
+    "actorOutputSchemaVersion": 1,
+    "title": "LinkedIn job results",
+    "properties": {
+      "jobs": {
+        "type": "string",
+        "title": "Jobs dataset",
+        "description": "Collected public job listings and any available details.",
+        "template": "{{links.apiDefaultDatasetUrl}}/items?format=json&clean=true"
       }
     }
   }
