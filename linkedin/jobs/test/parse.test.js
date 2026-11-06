@@ -57,3 +57,25 @@ test('search url from linkedin url + title filters', () => {
     assert.ok(!titleMatches('Designer', ['developer']));
     assert.equal(htmlToText('<p>A</p><p>B&nbsp;C</p>'), 'A B C');
 });
+
+import { readFileSync } from 'node:fs';
+import { parseSalary, parseRecruiter } from '../src/parse.js';
+
+test('parseSalary splits range, currency and period', () => {
+    assert.deepEqual(parseSalary('NOK 900,000.00/yr - NOK 1,100,000.00/yr'), { salaryMin: 900000, salaryMax: 1100000, salaryCurrency: 'NOK', salaryPeriod: 'YEAR' });
+    assert.equal(parseSalary('').salaryMin, null);
+});
+
+test('parseRecruiter reads name, headline and profile link', () => {
+    const r = parseRecruiter(readFileSync(new URL('./fixture-recruiter.html', import.meta.url), 'utf8'));
+    assert.equal(r.posterFullName, 'James Shenton');
+    assert.equal(r.posterProfileUrl, 'https://uk.linkedin.com/in/jamesshenton');
+    assert.match(r.posterTitle, /Executive Search Partner/);
+});
+
+import { extractContacts } from '../src/parse.js';
+test('extractContacts finds email and phone in ad text', () => {
+    const r = extractContacts('Kontakt Ronja Barstad på telefon 986 56 676 eller e-post ronja.barstad@capgemini.com. Org 2026.');
+    assert.deepEqual(r.contactEmails, ['ronja.barstad@capgemini.com']);
+    assert.deepEqual(r.contactPhones, ['986 56 676']);
+});

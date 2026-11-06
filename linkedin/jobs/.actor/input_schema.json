@@ -242,6 +242,19 @@
           "RESIDENTIAL"
         ]
       }
+    },
+    "includeCompanyProfile": {
+      "title": "Include company profile (slower)",
+      "type": "boolean",
+      "description": "Also read each company's public LinkedIn page once and add website, industry, size, followers and headquarters when LinkedIn serves them. Best effort; needs a working proxy.",
+      "default": false
+    },
+    "debugSaveHtml": {
+      "title": "Debug: save raw detail pages",
+      "type": "integer",
+      "description": "Save the raw HTML of the first N job detail pages to the key-value store (for diagnosing missing fields).",
+      "default": 0,
+      "minimum": 0
     }
   }
 }

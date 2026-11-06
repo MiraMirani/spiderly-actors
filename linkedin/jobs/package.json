@@ -4,6 +4,6 @@
   "type": "module",
   "description": "Fast LinkedIn jobs scraper (public job pages, no login)",
   "scripts": { "start": "node src/main.js", "test": "node --test test/parse.test.js" },
-  "dependencies": { "apify": "^3.2.0", "crawlee": "^3.11.0" },
+  "dependencies": { "apify": "^3.2.0", "crawlee": "^3.11.0", "got-scraping": "^4.0.0" },
   "license": "ISC"
 }

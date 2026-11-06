@@ -49,9 +49,13 @@ export function parseDetailPage(html) {
     const criteria = {};
     for (const m of h.matchAll(/<li[^>]*description__job-criteria-item[^>]*>[\s\S]*?<h3[^>]*>([\s\S]*?)<\/h3>[\s\S]*?<span[^>]*>([\s\S]*?)<\/span>/g)) criteria[text(m[1]).toLowerCase()] = text(m[2]);
     const descHtml = first(/<div[^>]*show-more-less-html__markup[^>]*>([\s\S]*?)<\/div>/, h) ?? '';
-    const applyRaw = first(/<code[^>]*id="applyUrl"[^>]*>\s*<!--\s*"?([^"\s>]+)"?\s*-->/, h);
+    const applyRaw = first(/<code[^>]*id="applyUrl"[^>]*>\s*<!--\s*"?([^"\s>]+)"?\s*-->/, h)
+        ?? first(/href="(https?:\/\/[^"]*\/jobs\/view\/externalApply\/[^"]+)"/, h)
+        ?? first(/data-apply-url="([^"]+)"/, h);
     const applicantsText = text(first(/<(?:span|figcaption)[^>]*num-applicants__caption[^>]*>([\s\S]*?)<\/(?:span|figcaption)>/, h)) || text(first(/<span[^>]*num-applicants__caption[^>]*>([\s\S]*?)<\/span>/, h));
     const salary = text(first(/<div[^>]*compensation__salary[^>]*>([\s\S]*?)<\/div>/, h) ?? first(/<span[^>]*salary[^>]*>([\s\S]*?)<\/span>/, h));
+    const rec = parseRecruiter(h);
+    const sal = parseSalary(salary);
     const applyType = /apply-link-onsite/.test(h) ? 'EASY_APPLY' : /apply-link-offsite|apply-button__offsite/.test(h) ? 'EXTERNAL' : '';
     return {
         title,
@@ -68,9 +72,74 @@ export function parseDetailPage(html) {
         salary: salary.replace(/^(base pay range|pay range)\s*/i, ''),
         applyType,
         applyUrl: applyRaw ? decode(applyRaw) : '',
+        ...sal,
+        ...rec,
+        ...extractContacts(htmlToText(descHtml)),
         description: htmlToText(descHtml),
         descriptionHtml: clean(descHtml) ? descHtml.trim() : '',
     };
+}
+
+/** The "Direct message the job poster" block: recruiter / hiring contact name, headline and profile link. */
+export function parseRecruiter(html) {
+    const h = String(html);
+    const i = h.search(/message-the-recruiter|hirer-card|job-poster/i);
+    if (i < 0) return { posterFullName: '', posterTitle: '', posterProfileUrl: '', posterPhoto: '' };
+    const block = h.slice(i, i + 6000);
+    const link = first(/<a[^>]+class="[^"]*base-card__full-link[^"]*"[^>]+href="([^"]+)"/, block) ?? first(/<a[^>]+href="(https?:\/\/[^"]*linkedin\.com\/in\/[^"]+)"/, block);
+    const name = text(first(/<h3[^>]*base-main-card__title[^>]*>([\s\S]*?)<\/h3>/, block)) || text(first(/aria-label="Message ([^"]+)"/, block));
+    return {
+        posterFullName: name,
+        posterTitle: text(first(/<h4[^>]*base-main-card__subtitle[^>]*>([\s\S]*?)<\/h4>/, block)),
+        posterProfileUrl: stripQuery(link),
+        posterPhoto: decode(first(/data-delayed-url="([^"]*profile-displayphoto[^"]*)"/, block) ?? ''),
+    };
+}
+
+/** "NOK 900,000.00/yr - NOK 1,100,000.00/yr" -> { salaryMin, salaryMax, salaryCurrency, salaryPeriod } */
+export function parseSalary(s) {
+    const empty = { salaryMin: null, salaryMax: null, salaryCurrency: '', salaryPeriod: '' };
+    const str = String(s ?? '');
+    const nums = [...str.matchAll(/(\d[\d,]*(?:\.\d+)?)/g)].map((m) => Number(m[1].replace(/,/g, '')));
+    if (!nums.length) return empty;
+    const cur = first(/([A-Z]{3}|[$€£])/, str) ?? '';
+    const per = (first(/\/\s*(yr|year|mo|month|hr|hour|wk|week|day)/i, str) ?? '').toLowerCase();
+    const period = { yr: 'YEAR', year: 'YEAR', mo: 'MONTH', month: 'MONTH', hr: 'HOUR', hour: 'HOUR', wk: 'WEEK', week: 'WEEK', day: 'DAY' }[per] ?? '';
+    return { salaryMin: Math.min(...nums), salaryMax: Math.max(...nums), salaryCurrency: cur, salaryPeriod: period };
+}
+
+/** Best-effort company profile from a public company page (JSON-LD plus visible facts). */
+export function parseCompanyPage(html) {
+    const h = String(html);
+    const out = { companyWebsite: '', companyDescription: '', companyIndustry: '', companySize: '', companyFollowers: null, companyHeadquarters: '', companyFounded: '', companyEmployeesOnLinkedIn: null };
+    const ld = first(/<script[^>]+application\/ld\+json[^>]*>([\s\S]*?)<\/script>/, h);
+    if (ld) {
+        try {
+            const d = JSON.parse(ld);
+            const o = (d['@graph'] ?? [d]).find((x) => /Organization|Corporation/i.test(x['@type'] ?? '')) ?? d;
+            out.companyWebsite = o.sameAs ?? o.url ?? '';
+            out.companyDescription = clean(o.description ?? '');
+            out.companyFollowers = o.interactionStatistic?.userInteractionCount ?? null;
+            out.companyEmployeesOnLinkedIn = o.numberOfEmployees?.value ?? null;
+            const a = o.address;
+            if (a) out.companyHeadquarters = [a.addressLocality, a.addressRegion, a.addressCountry].filter(Boolean).join(', ');
+        } catch { /* ignore malformed JSON-LD */ }
+    }
+    const fact = (label) => text(first(new RegExp(`<dt[^>]*>\\s*${label}\\s*<\\/dt>\\s*<dd[^>]*>([\\s\\S]*?)<\\/dd>`, 'i'), h));
+    out.companyIndustry = fact('Industry');
+    out.companySize = fact('Company size');
+    out.companyFounded = fact('Founded');
+    if (!out.companyHeadquarters) out.companyHeadquarters = fact('Headquarters');
+    if (!out.companyWebsite) out.companyWebsite = decode(first(/<dt[^>]*>\s*Website\s*<\/dt>\s*<dd[^>]*>\s*<a[^>]+href="([^"]+)"/i, h) ?? '');
+    return out;
+}
+
+/** Emails and Norwegian-style phone numbers written in the ad text (often the real contact person). */
+export function extractContacts(desc) {
+    const s = String(desc ?? '');
+    const emails = [...new Set((s.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi) ?? []).map((e) => e.toLowerCase()))];
+    const phones = [...new Set((s.match(/(?:\+47[\s-]?)?(?<![\d.-])(?:\d{3} ?\d{2} ?\d{3}|\d{2} ?\d{2} ?\d{2} ?\d{2})(?![\d.-])/g) ?? []).map((x) => x.trim()))];
+    return { contactEmails: emails, contactPhones: phones };
 }
 
 const ENUM_LISTS = {

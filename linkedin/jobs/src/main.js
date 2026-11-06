@@ -1,13 +1,14 @@
 import { Actor, log } from 'apify';
 import { HttpCrawler } from 'crawlee';
-import { parseSearchPage, parseDetailPage, buildSearchUrl, optionsFromSearchUrl, titleMatches, DETAIL_ENDPOINT, PAGE_SIZE, MAX_START } from './parse.js';
+import { gotScraping } from 'got-scraping';
+import { parseSearchPage, parseDetailPage, parseCompanyPage, buildSearchUrl, optionsFromSearchUrl, titleMatches, DETAIL_ENDPOINT, PAGE_SIZE, MAX_START } from './parse.js';
 
 await Actor.init();
 const input = (await Actor.getInput()) ?? {};
 const {
     keywords = [], keyword, locations = [], location, geoId, datePosted, companyName = [], companyId = [], easyApply = false,
     under10Applicants = false, jobType = [], experienceLevel = [], workType = [], sortBy = 'relevance', limit = 100, maxPages = 100,
-    includeDetails = true, maxRequestsPerMinute = 240, titleInclude = [], titleExclude = [], skipJobId = [], urlParam = [], startUrls = [], proxyConfiguration,
+    includeDetails = true, includeCompanyProfile = false, debugSaveHtml = 0, maxRequestsPerMinute = 240, titleInclude = [], titleExclude = [], skipJobId = [], urlParam = [], startUrls = [], proxyConfiguration,
 } = input;
 
 // ---- build the list of searches: every keyword x every location, plus any pasted LinkedIn search URLs ----
@@ -39,6 +40,8 @@ const passes = (job) => {
     return true;
 };
 
+const companyCache = new Map();
+let debugSaved = 0;
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const RATE_LIMITED = new Set([401, 403, 429, 999]);
 
@@ -65,6 +68,14 @@ const crawler = new HttpCrawler({
         if (request.label === 'DETAIL') {
             const base = request.userData.job;
             const d = parseDetailPage(html);
+            if (debugSaveHtml > debugSaved) { debugSaved++; await Actor.setValue(`debug-detail-${base.id}`, html, { contentType: 'text/html' }); }
+            let company = {};
+            if (d && includeCompanyProfile && d.companyUrl) {
+                if (!companyCache.has(d.companyUrl)) {
+                    try { const r = await gotScraping({ url: d.companyUrl, proxyUrl: proxy ? await proxy.newUrl() : undefined, timeout: { request: 20000 }, throwHttpErrors: false }); companyCache.set(d.companyUrl, r.statusCode === 200 ? parseCompanyPage(r.body) : {}); } catch { companyCache.set(d.companyUrl, {}); }
+                }
+                company = companyCache.get(d.companyUrl);
+            }
             await Actor.pushData(d ? {
                 ...base,
                 title: d.title || base.title,
@@ -80,7 +91,11 @@ const crawler = new HttpCrawler({
                 industries: d.industries,
                 salary: d.salary,
                 applyType: d.applyType,
-                applyUrl: d.applyUrl,
+                applyUrl: d.applyUrl || base.url,
+                contactEmails: d.contactEmails, contactPhones: d.contactPhones,
+                salaryMin: d.salaryMin, salaryMax: d.salaryMax, salaryCurrency: d.salaryCurrency, salaryPeriod: d.salaryPeriod,
+                posterFullName: d.posterFullName, posterTitle: d.posterTitle, posterProfileUrl: d.posterProfileUrl, posterPhoto: d.posterPhoto,
+                ...company,
                 description: d.description,
                 descriptionHtml: d.descriptionHtml,
                 scrapedAt: now(),

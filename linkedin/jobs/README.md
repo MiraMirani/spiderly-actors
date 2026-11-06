@@ -126,3 +126,11 @@ Open an issue on the Actor's Issues tab with a link to the failing run. LinkedIn
 ## Disclaimer
 
 This Actor is not affiliated with or endorsed by LinkedIn. LinkedIn is a trademark of its owner and is used only to describe what the Actor works with.
+
+## Extra fields (added Nov 2026)
+
+- `posterFullName`, `posterTitle`, `posterProfileUrl`, `posterPhoto`: the recruiter / hiring contact LinkedIn shows on the ad (when there is one).
+- `salaryMin`, `salaryMax`, `salaryCurrency`, `salaryPeriod`: parsed from the salary range.
+- `contactEmails`, `contactPhones`: emails and Norwegian phone numbers written in the ad text.
+- `applyUrl`: LinkedIn does not show external apply links to logged-out visitors, so this is the LinkedIn job link.
+- Optional `includeCompanyProfile`: `companyWebsite`, `companyIndustry`, `companySize`, `companyHeadquarters` (best effort, slower).
