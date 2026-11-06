@@ -1,0 +1,65 @@
+{
+  "title": "LinkedIn company lookup",
+  "type": "object",
+  "schemaVersion": 1,
+  "properties": {
+    "companies": {
+      "title": "Company URLs, slugs or IDs",
+      "type": "array",
+      "description": "Company overview URLs, /company/slug paths, exact slugs or numeric IDs. Direct lookup, not keyword search. Up to 5,000 combined inputs.",
+      "editor": "stringList",
+      "prefill": [
+        "microsoft",
+        "cognitedata"
+      ]
+    },
+    "startUrls": {
+      "title": "Company URLs (optional)",
+      "type": "array",
+      "description": "Alternative list of LinkedIn company overview URLs, added to Companies. Duplicate normalized inputs are removed.",
+      "editor": "requestListSources",
+      "prefill": []
+    },
+    "maxConcurrency": {
+      "title": "Concurrent company requests",
+      "type": "integer",
+      "description": "Maximum parallel lookups. Start low to reduce rate limiting.",
+      "default": 3,
+      "minimum": 1,
+      "maximum": 10
+    },
+    "maxRequestsPerMinute": {
+      "title": "Maximum requests per minute",
+      "type": "integer",
+      "description": "Rate limit across company requests and retries.",
+      "default": 60,
+      "minimum": 1,
+      "maximum": 300
+    },
+    "maxRetries": {
+      "title": "Retries for temporary failures",
+      "type": "integer",
+      "description": "Retries after network failures, rate limits or access restrictions. Missing pages (404) are not retried.",
+      "default": 2,
+      "minimum": 0,
+      "maximum": 5
+    },
+    "requestTimeoutSecs": {
+      "title": "Request timeout (seconds)",
+      "type": "integer",
+      "description": "Time allowed for each HTTP request.",
+      "default": 30,
+      "minimum": 5,
+      "maximum": 120
+    },
+    "proxyConfiguration": {
+      "title": "Proxy configuration",
+      "type": "object",
+      "description": "Optional Apify or custom proxy. Direct requests are the default. Configure a proxy if LinkedIn restricts access. Proxy use may add charges.",
+      "editor": "proxy",
+      "default": {
+        "useApifyProxy": false
+      }
+    }
+  }
+}

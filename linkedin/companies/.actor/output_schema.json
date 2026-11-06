@@ -1,0 +1,18 @@
+{
+  "actorOutputSchemaVersion": 1,
+  "title": "Company lookup output",
+  "properties": {
+    "companies": {
+      "type": "string",
+      "title": "Companies dataset",
+      "description": "Public company data with explicit lookup statuses.",
+      "template": "{{links.apiDefaultDatasetUrl}}/items?format=json&clean=true"
+    },
+    "summary": {
+      "type": "string",
+      "title": "Run summary",
+      "description": "Counts of found, blocked, missing and failed company lookups.",
+      "template": "{{links.apiDefaultKeyValueStoreUrl}}/records/SUMMARY"
+    }
+  }
+}
