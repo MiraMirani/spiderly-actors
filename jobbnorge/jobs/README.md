@@ -1,3 +1,5 @@
+[![Spiderly Jobbnorge Jobs Scraper](https://raw.githubusercontent.com/MiraMirani/spiderly-actors/732476cc05276e0c13a0f17f5ed18292dfd2746d/assets/banners/jobbnorge-jobs.png)](https://apify.com/spiderly/jobbnorge-job-scraper-fast-multi-keyword)
+
 # Jobbnorge Job Scraper - Fast, Multi-Keyword
 
 Scrapes [jobbnorge.no](https://www.jobbnorge.no) (academic, research and public-sector jobs in Norway) through the site's own public JSON endpoints. No browser, very fast, cheap.

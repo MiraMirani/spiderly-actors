@@ -1,3 +1,5 @@
+[![Spiderly FINN.no Jobs Scraper](https://raw.githubusercontent.com/MiraMirani/spiderly-actors/732476cc05276e0c13a0f17f5ed18292dfd2746d/assets/banners/finn-jobs.png)](https://apify.com/spiderly/finn-no-job-scraper-fast-multi-keyword)
+
 # Finn.no Job Scraper - Fast, Multi-Keyword
 
 Scrape job ads from **Finn.no**, Norway's largest job board, in seconds. Search several keywords in one run, filter by county or city by name, and get full descriptions, deadlines, employers and coordinates as clean JSON, CSV or Excel.
