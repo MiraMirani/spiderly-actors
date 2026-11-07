@@ -145,32 +145,9 @@ Failed lookups remain in the dataset with `input`, `requestedUrl`, `status`, `re
 
 The key-value store's `SUMMARY` record counts found, missing, blocked and failed lookups. Some failures in a batch do not discard the companies that succeeded.
 
-## Same-input comparison with Bebity
-
-On **7 November 2026 (Europe/Oslo)**, we ran this Actor and [Bebity's LinkedIn Companies & Profiles scraper](https://apify.com/bebity/linkedin-premium-actor) against the same four direct company URLs: Microsoft, Cognite, Apify and Cisco. Both runs used 512 MB. Spiderly used direct requests with no proxy; Bebity used its default internal configuration. Both were invoked through Apify MCP during the same session. The final Spiderly verification followed the reference batch by about nine minutes, so this was not a simultaneous controlled speed benchmark.
-
-| Measured result | Spiderly | Bebity |
-| --- | --- | --- |
-| Company URLs submitted | 4 | 4 |
-| Company profiles returned with data | 4 | 0 |
-| Dataset rows | 4 | 4 |
-| Failed lookup rows | 0 | 4: `NOT_FOUND`, reason `UNREACHABLE` |
-| Process status | `SUCCEEDED` | `SUCCEEDED` |
-| Run time | 6.556 seconds | 18.498 seconds |
-| Compute units | 0.00091056 CU | 0.00256917 CU |
-| Observed run charge | Console showed $0.000 rounded (less than $0.001) | $0.00005: one start event, zero company events |
-
-Charges use different models: Spiderly incurs normal platform usage, while Bebity bills its event price and does not separately charge platform usage. The Console rounds Spiderly's tiny run charge and excludes ongoing timed storage, so it is not presented as an exact zero. There is no valid cost-per-success comparison when the reference returns no company profiles.
-
-**Four rows do not necessarily mean four company profiles.** In this sample, every Bebity row was an unsuccessful lookup. We also checked its `/company/microsoft` path format, which returned `UNREACHABLE`, and a `Cognite` company-name search, which produced no profile.
-
-This is a small availability test, not proof of general superiority. Because the reference returned no company data, we cannot establish field-level accuracy, equal feature coverage or a fair cost per successful company. Bebity documents additional capabilities—including keyword company search, people profiles, coordinates, industry IDs and verification data—that this public-page Actor does not claim to reproduce. Do not infer that missing fields agree just because both runs completed.
-
-[Spiderly test run](https://console.apify.com/actors/runs/r1m1E9StcBvdfwWlo) · [Bebity test run](https://console.apify.com/actors/runs/i2Sn0aoIuKCWL20BX). These run links may require access to the account that ran the tests. Runtime and counts describe this sample only; they are not guarantees.
-
 ## What is included in this version?
 
-This Actor focuses on **bulk company-page lookup**. It does not currently include broad keyword company discovery, LinkedIn people profiles, employee lists, Sales Navigator, company posts, private contact enrichment or authenticated-only data. It does not claim full feature parity with a combined companies-and-people scraper.
+This Actor focuses on **bulk company-page lookup**. It does not currently include broad keyword company discovery, LinkedIn people profiles, employee lists, Sales Navigator, company posts, private contact enrichment or authenticated-only data.
 
 Verification badges, active status, arbitrary company hashtags and latitude/longitude are not guessed. Public-page availability can change, and some pages may require a proxy or remain inaccessible.
 

@@ -157,31 +157,6 @@ This adds requests. LinkedIn may block a company page even when its jobs are pub
 
 The Actor returns an apply URL when it appears in the public response. If none is exposed, it falls back to the LinkedIn job URL. This also provides a usable job link for Easy Apply listings. A LinkedIn fallback is not a resolved external application link. Full coverage of employer application pages is not supported by this version.
 
-## Same-search comparison with Bebity
-
-On **7 November 2026 (Europe/Oslo)**, we ran this Actor and [Bebity's LinkedIn Jobs scraper](https://apify.com/bebity/linkedin-jobs-scraper) for **software engineer · Norway · past week · maximum 10 jobs**. Company enrichment and Bebity's premium hiring-contact add-on were disabled. Spiderly used direct requests without a proxy; Bebity used its own internal request configuration.
-
-| Observed result | Spiderly | Bebity |
-| --- | --- | --- |
-| Final dataset jobs | 10 | 10 |
-| Matching job IDs | Same 10 IDs | Same 10 IDs |
-| Run time | 4.192 seconds | 27.114 seconds |
-| Allocated memory | 512 MB | 1,024 MB |
-| Parsed salary ranges | 1 | 1 |
-| Jobs with a recruiter name | 1 | 1 |
-| Jobs with an email extracted from the ad | 2 | 0 |
-| Jobs with a phone extracted from the ad | 1 | 0 |
-| Non-LinkedIn apply URLs | 0 | 3 |
-| Observed charge | Approximately $0.001, rounded by Console | $0.01505: ten job events plus one start event |
-
-The ten matched jobs agreed on title, company, location, applicant text, employment type, seniority and apply type. Their description text also matched after Unicode/whitespace normalization and removal of line-leading list bullets; HTML and presentation are not claimed to be byte-identical.
-
-**Bebity returned three external-host apply URLs that Spiderly did not return.** Spiderly fell back to the LinkedIn job URL. Those three URLs are observed output links; this test did not verify whether the destination application forms remain open. This Actor still does not offer full external application-link resolution.
-
-These are results from one small test, not a general speed, price or completeness guarantee. Both calls requested 512 MB, but Bebity's run settings used 1,024 MB, so this is not a controlled same-hardware benchmark. Apify pricing differs by model and plan; Spiderly's Console total is rounded and excludes ongoing timed storage. The final counts come from the fetched dataset rows, because run metadata initially lagged behind writes.
-
-[Spiderly test run](https://console.apify.com/actors/runs/Ogckhewg0mURLymA7) · [Bebity test run](https://console.apify.com/actors/runs/Vrh34LHBCgvlCUuwf). Run links may require access to the account that ran the tests. Repeat the sample with current data before relying on its performance or coverage.
-
 ## API and automation
 
 Use Apify schedules, webhooks and integrations, or call the Actor from your own application. Keep your API token private and read it from an environment variable.
