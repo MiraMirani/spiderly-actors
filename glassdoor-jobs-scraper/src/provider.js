@@ -2,6 +2,7 @@ import { load } from 'cheerio';
 import { origin } from './cards.js';
 
 export const providerActor = 'glasswing/glassdoor-jobs-scraper';
+export const fastProviderActor = 'deepmine/glassdoor-jobs';
 export const defaultKeyword = 'software engineer';
 export const defaultLocation = 'New York, NY';
 
@@ -18,6 +19,7 @@ const number = (value, max = Number.MAX_SAFE_INTEGER) => typeof value === 'numbe
     && Number.isFinite(value) && value >= 0 && value <= max ? value : null;
 const flag = (value) => typeof value === 'boolean' ? value : null;
 const strings = (value) => Array.isArray(value) ? value.map(text).filter(Boolean) : [];
+const numericId = (value) => number(typeof value === 'string' && /^\d+$/.test(value) ? Number(value) : value);
 
 export function providerRunOptions(input, budget, parentDeadline, now = Date.now()) {
     // Leave time to read and save the upstream dataset before the parent expires.
@@ -39,7 +41,7 @@ const glassdoorUrl = (value, host, prefix) => {
 function employerProfile(item) {
     const website = URL.parse(text(item.companyWebsite) ?? '');
     const profile = {
-        id: number(item.companyId),
+        id: numericId(item.companyId),
         url: glassdoorUrl(item.companyGlassdoorUrl, origin, '/Overview/'),
         logoUrl: glassdoorUrl(item.companyLogo, 'https://media.glassdoor.com', '/sql/'),
         size: text(item.companySize),
@@ -62,6 +64,7 @@ function employerProfile(item) {
         seniorManagementRating: number(item.companySeniorManagementRating, 5),
         workLifeBalanceRating: number(item.companyWorkLifeBalanceRating, 5),
         statsDate: text(item.companyStatsDate),
+        ceo: text(item.companyCeo),
     };
     return Object.values(profile).some((value) => value !== null) ? profile : null;
 }
@@ -96,6 +99,55 @@ export function providerInput(input, mode, urls, maxItems) {
     return { ...base, ...filters, keywords: [keyword.trim()], location: location.trim(), minSalary };
 }
 
+const postedWithin = { any: 'any', 1: 'past24Hours', 3: 'past3Days', 7: 'pastWeek', 14: 'past2Weeks', 30: 'pastMonth' };
+const jobType = { fulltime: 'fullTime', parttime: 'partTime' };
+const seniority = { entrylevel: 'entryLevel', midseniorlevel: 'midSenior' };
+
+export function liveProvider(input, mode, upstream) {
+    const source = input.liveSource ?? 'fast';
+    if (!['fast', 'original'].includes(source)) throw new Error('Choose a valid live source.');
+    if (source === 'original' || mode !== 'keyword' || upstream.companySize === '5001+') {
+        return { actor: providerActor, input: upstream };
+    }
+    return {
+        actor: fastProviderActor,
+        input: {
+            keywords: upstream.keywords, location: upstream.location, maxResults: upstream.maxItems,
+            includeDetails: upstream.includeDescription || upstream.includeEmployerStats,
+            postedWithin: postedWithin[upstream.datePosted ?? 'any'],
+            jobType: jobType[upstream.jobType] ?? upstream.jobType,
+            seniority: seniority[upstream.seniorityLevel] ?? upstream.seniorityLevel,
+            companySize: upstream.companySize, minRating: upstream.minRating, minSalary: upstream.minSalary,
+            remoteOnly: upstream.remoteOnly, easyApplyOnly: upstream.easyApplyOnly,
+        },
+    };
+}
+
+export function adaptFastRows(items, options) {
+    return items.map((item) => ({
+        ...item,
+        status: item.status ?? 'ok',
+        url: item.jobUrl,
+        companyGlassdoorUrl: item.companyUrl,
+        snippet: item.descriptionSnippet,
+        description: options.includeDescription ? item.description : null,
+        descriptionHtml: options.includeDescription ? item.descriptionHtml : null,
+        easyApply: item.isEasyApply,
+        sponsored: item.isSponsored,
+        salaryRaw: item.salary,
+        salaryIsEstimate: item.isSalaryEstimate,
+        jobTypes: item.jobType ? [item.jobType] : [],
+        workplaceType: item.workplace,
+        companyCeoApprovalPct: item.companyCeoApprovalPercent,
+        companyRecommendPct: item.companyRecommendPercent,
+        companyWorkLifeBalanceRating: item.companyRatingWorkLifeBalance,
+        companyCompensationRating: item.companyRatingCompensation,
+        companyCultureRating: item.companyRatingCulture,
+        companyCareerOpportunitiesRating: item.companyRatingCareer,
+        companySeniorManagementRating: item.companyRatingManagement,
+    }));
+}
+
 export function providerRows(items, urls, phrase, maxItems) {
     const rows = new Map();
     const match = phrase?.toLowerCase();
@@ -118,11 +170,11 @@ export function providerRows(items, urls, phrase, maxItems) {
             company: text(item.company),
             companyRating: companyRating > 0 ? companyRating : null,
             location: text(item.location),
-            locationId: number(item.locationId),
+            locationId: numericId(item.locationId),
             locationType: text(item.locationType),
             easyApplyBadge: item.easyApply === true,
             sponsored: flag(item.sponsored),
-            salaryRaw: null,
+            salaryRaw: text(item.salaryRaw),
             salaryMin: number(item.salaryMin),
             salaryMedian: number(item.salaryMedian),
             salaryMax: number(item.salaryMax),
@@ -145,6 +197,16 @@ export function providerRows(items, urls, phrase, maxItems) {
             companyProfile: employerProfile(item),
             companyStatsError: text(item.companyStatsError),
             scrapedAt: text(item.scrapedAt),
+            postedAt: text(item.postedAt),
+            city: text(item.city),
+            state: text(item.state),
+            country: text(item.country),
+            latitude: typeof item.latitude === 'number' && Math.abs(item.latitude) <= 90 ? item.latitude : null,
+            longitude: typeof item.longitude === 'number' && Math.abs(item.longitude) <= 180 ? item.longitude : null,
+            applyUrl: glassdoorUrl(item.applyUrl, origin, '/partner/jobListing.htm'),
+            seniority: text(item.seniority),
+            benefits: strings(item.benefits),
+            expired: flag(item.isExpired),
         });
         if (rows.size >= maxItems) break;
     }

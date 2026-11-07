@@ -1,7 +1,7 @@
 import { Actor, log } from 'apify';
 import { chromium } from 'playwright';
 import { cardSelector, origin, parseCards, sampleSearch, searchUrl } from './cards.js';
-import { providerActor, providerInput, providerRows, providerRunOptions } from './provider.js';
+import { adaptFastRows, fastProviderActor, liveProvider, providerInput, providerRows, providerRunOptions } from './provider.js';
 
 const summary = { jobs: 0, searches: [] };
 let browser;
@@ -64,10 +64,12 @@ try {
             throw new Error('Set the upstream budget between $0.01 and $1.');
         }
         const options = providerRunOptions(upstreamInput, providerBudgetUsd, Actor.getEnv().timeoutAt);
+        const source = liveProvider(input, mode, upstreamInput);
+        summary.providerActor = source.actor;
         summary.requestedJobs = maxItems;
         summary.providerTimeoutSecs = options.timeout;
         summary.providerMemoryMbytes = options.memory;
-        const started = await Actor.apifyClient.actor(providerActor).start(upstreamInput, options);
+        const started = await Actor.apifyClient.actor(source.actor).start(source.input, options);
         activeProviderRun = started.id;
         summary.providerRunId = started.id;
         await Actor.setValue('SUMMARY', summary);
@@ -78,7 +80,8 @@ try {
         if (!run.defaultDatasetId) throw new Error('The upstream search did not produce a dataset.');
         const { items } = await Actor.apifyClient.dataset(run.defaultDatasetId).listItems({ limit: maxItems + 10 });
         const phrase = mode === 'keyword' && input.titleMatch === 'phrase' ? upstreamInput.keywords[0] : null;
-        const rows = providerRows(items, urls, phrase, maxItems);
+        const normalized = source.actor === fastProviderActor ? adaptFastRows(items, upstreamInput) : items;
+        const rows = providerRows(normalized, urls, phrase, maxItems);
         if (rows.length) await Actor.pushData(rows);
         summary.jobs = rows.length;
         summary.upstreamRows = items.length;

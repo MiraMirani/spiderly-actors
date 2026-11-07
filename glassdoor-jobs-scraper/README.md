@@ -26,6 +26,10 @@ Keyword and URL modes run an upstream Apify Actor with a separate charge cap. Th
 
 Live searches include median pay, posting age, job types, skills, and work arrangement when the source supplies them. Turn on **Include full job descriptions** to fetch the full text and formatted HTML, and **Include employer profiles** to fetch company size, industry, headquarters, and rating breakdowns. The upstream run can charge extra for full descriptions. Use the **Jobs**, **Job details**, **Companies**, and **Salaries** output views to browse the data. The full dataset also includes location IDs, sponsored flags, listing tags, and collection timestamps when supplied. Missing details remain empty. Existing API calls can set both detail options explicitly. Saved-page imports continue to use the fields visible on each card.
 
+## Live search source
+
+Keyword searches use the fast source by default. It can provide posting dates, geographic coordinates, benefits and Glassdoor application links when present. Choose **Original source** for the original keyword dataset, including its listing tags and employer ratings where available. URL searches and the 5,001+ employee filter use the original source. Results and field availability can differ between sources.
+
 ## Search by URL
 
 Choose **Glassdoor search URL** and paste up to five supported US results page URLs. URL searches use the filters in those URLs. If a URL is rejected, enter the role and location in keyword mode or import the saved page.

@@ -1,6 +1,35 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { providerInput, providerRows, providerRunOptions } from '../src/provider.js';
+import { adaptFastRows, fastProviderActor, liveProvider, providerActor, providerInput, providerRows, providerRunOptions } from '../src/provider.js';
+
+test('uses the faster keyword source without adding a date filter', () => {
+    const upstream = providerInput({ jobType: 'fulltime', includeDescription: true }, 'keyword', [], 20);
+    const source = liveProvider({}, 'keyword', upstream);
+    assert.equal(source.actor, fastProviderActor);
+    assert.equal(source.input.postedWithin, 'any');
+    assert.equal(source.input.jobType, 'fullTime');
+    assert.equal(source.input.maxResults, 20);
+    assert.equal(liveProvider({}, 'url', upstream).actor, providerActor);
+    assert.equal(liveProvider({}, 'keyword', { ...upstream, companySize: '5001+' }).actor, providerActor);
+});
+
+test('keeps verified posting and location fields from fast results', () => {
+    const items = adaptFastRows([{
+        jobId: '123', jobUrl: 'https://www.glassdoor.com/job-listing/example.htm',
+        title: 'Engineer', postedAt: '2026-11-07', locationId: '1132348',
+        latitude: 40.7, longitude: -74.0, isSalaryEstimate: false, salaryMin: 90000,
+        applyUrl: 'https://www.glassdoor.com/partner/jobListing.htm?jobListingId=123',
+        description: 'Complete details', benefits: ['Paid time off'],
+    }], { includeDescription: false });
+    const [row] = providerRows(items, [], null, 20);
+    assert.equal(row.description, null);
+    assert.equal(row.postedAt, '2026-11-07');
+    assert.equal(row.longitude, -74.0);
+    assert.equal(row.locationId, 1132348);
+    assert.equal(row.salarySource, 'employer');
+    assert.ok(row.applyUrl.includes('jobListingId=123'));
+    assert.deepEqual(row.benefits, ['Paid time off']);
+});
 
 test('gives enriched runs more resources while reserving time for dataset import', () => {
     const now = 1000;

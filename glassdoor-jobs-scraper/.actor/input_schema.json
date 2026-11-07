@@ -210,6 +210,22 @@
       "sectionCaption": "Search by URL",
       "sectionDescription": "Paste your search URL when using URL search or saved-page import."
     },
+    "liveSource": {
+      "title": "Live search source",
+      "description": "Fast is the default for keyword searches. Original retains the original keyword source. URL searches use the original source. Sources may return different listings and fields.",
+      "type": "string",
+      "editor": "select",
+      "enum": [
+        "fast",
+        "original"
+      ],
+      "enumTitles": [
+        "Fast keyword search",
+        "Original source"
+      ],
+      "default": "fast",
+      "sectionCaption": "Live search source"
+    },
     "maxItems": {
       "title": "Maximum jobs",
       "type": "integer",
