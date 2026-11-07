@@ -6,7 +6,7 @@
   "version": "1.0",
   "buildTag": "latest",
   "meta": {
-    "generatedBy": "Codex (GPT-6)"
+    "generatedBy": "Codex with GPT-6"
   },
   "input": "./input_schema.json",
   "output": "./output_schema.json",

@@ -37,6 +37,15 @@ export function employeeRange(value) {
     return { start: nums[0], end: /\+/.test(value) ? null : nums[1] ?? nums[0] };
 }
 
+/** Public English follower labels; compact counts reflect LinkedIn's rounded display. */
+export function parseFollowerCount(value) {
+    const match = clean(value).match(/([\d][\d,.\s]*?)\s*([KMB])?\s+followers\b/i);
+    if (!match) return null;
+    const count = Number(match[1].replace(/[,\s]/g, ''));
+    if (!Number.isFinite(count)) return null;
+    return Math.round(count * ({ K: 1000, M: 1000000, B: 1000000000 }[match[2]?.toUpperCase()] ?? 1));
+}
+
 function organizationData($) {
     const nodes = [];
     const visit = (v) => {
@@ -79,7 +88,9 @@ export function parseCompanyPage(html, requestedUrl) {
         const lines = $(el).find('[id^="address-"] p').map((j, p) => clean($(p).text())).get().filter(Boolean);
         if (lines.length) locations.push({ address: lines.join(', '), addressLines: lines, headquarter: /primary/i.test($(el).find('.tag-sm').text()), mapUrl: imageUrl($(el).find('a[data-tracking-control-name="org-locations_url"]').attr('href')) });
     });
-    const followers = clean($('.top-card-layout__first-subline').first().text()).match(/([\d,\.\s]+)\s+followers/i)?.[1];
+    const followersCount = parseFollowerCount($('.top-card-layout__first-subline').first().text())
+        ?? parseFollowerCount($('meta[name="description"]').attr('content'))
+        ?? parseFollowerCount($('meta[property="og:description"]').attr('content'));
     const ownUrn = $('[data-semaphore-content-type="COMPANY"]').first().attr('data-semaphore-content-urn')
         ?? $('.top-card-layout [data-entity-urn]').first().attr('data-entity-urn');
     const companyId = ownUrn?.match(/^urn:li:organization:(\d+)$/)?.[1] ?? null;
@@ -90,14 +101,15 @@ export function parseCompanyPage(html, requestedUrl) {
     const founded = facts.founded?.match(/\b\d{4}\b/)?.[0] ?? String(org.foundingDate ?? '').match(/^\d{4}/)?.[0];
     return {
         vanityName: decodeURIComponent(new URL(linkedinUrl).pathname.split('/')[2]), linkedinUrl, companyId, name,
-        tagline: clean($('.top-card-layout__tagline').first().text()) || null,
+        tagline: clean($('.top-card-layout__tagline').first().text())
+            || clean($('.top-card-layout__second-subline').first().text()) || null,
         description: clean(org.description) || clean($('[data-test-id="about-us__description"]').first().text()) || null,
         websiteUrl: externalUrl(sameAs) || externalUrl(factNode('website').find('a').attr('href')),
         phone: phone ? { number: phone } : null,
         industry: facts.industry || null, industryId: null,
         employeeCount: number(typeof org.numberOfEmployees === 'object' ? org.numberOfEmployees?.value : org.numberOfEmployees),
         employeeCountRange: employeeRange(facts['company size']), companySize: facts['company size'] || null,
-        followersCount: followers ? number(followers.replace(/[,\.\s]/g, '')) : null,
+        followersCount,
         foundedYear: founded ? Number(founded) : null,
         specialities: (facts.specialties ?? facts.specialities ?? '').split(/,\s*(?:and\s+)?/).map(clean).filter(Boolean),
         headquarters: facts.headquarters || null, headquarter, locations,

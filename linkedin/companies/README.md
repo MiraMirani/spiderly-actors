@@ -1,8 +1,10 @@
-# LinkedIn Companies Scraper — Bulk Company Profiles
+[![Spiderly LinkedIn Companies Scraper](https://raw.githubusercontent.com/MiraMirani/spiderly-actors/e297a1383b71b041457585f474917b6896281d8c/assets/banners/linkedin-companies.png)](https://apify.com/spiderly/linkedin-companies-scraper)
 
-![Spiderly LinkedIn Companies Scraper](https://raw.githubusercontent.com/MiraMirani/spiderly-actors/e297a1383b71b041457585f474917b6896281d8c/assets/banners/linkedin-companies.png)
+## What does LinkedIn Companies Scraper do?
 
-Collect structured company information from public LinkedIn company pages. Supply company URLs, exact slugs or numeric LinkedIn company IDs, run a bulk lookup, then export the results as JSON, CSV or Excel. **No LinkedIn login, cookies or subscription required.**
+Collect structured company information from public [LinkedIn company pages](https://www.linkedin.com/). Supply company URLs, exact slugs or numeric LinkedIn company IDs, run a bulk lookup, then export the results as JSON, CSV or Excel. **No LinkedIn login, cookies or subscription required.**
+
+**This is direct company-page lookup. Keyword company discovery and people profiles are not included.**
 
 Use it to enrich a company list, prepare business research, organize company websites and industries, or monitor public company information over time.
 
@@ -10,7 +12,7 @@ Use it to enrich a company list, prepare business research, organize company web
 
 When available on the public overview page:
 
-- Company name, LinkedIn URL, slug and company ID.
+- Company name, tagline, LinkedIn URL, slug and company ID.
 - Description, industry, company type and founding year.
 - Company website, with LinkedIn's public redirect unwrapped.
 - Public business phone number, when exposed.
@@ -72,48 +74,43 @@ Only LinkedIn company overview pages are accepted. Person profiles, arbitrary we
 
 ## Output example
 
-This fictional, shortened example shows the structure:
+These shortened records come from the 7 November 2026 live validation sample. Fields not shown here remain available in the full dataset; counts may change over time. You can download the dataset in JSON, HTML, CSV or Excel.
 
 ```json
-{
-  "input": "example-software",
-  "requestedUrl": "https://www.linkedin.com/company/example-software/",
-  "status": "FOUND",
-  "reason": null,
-  "vanityName": "example-software",
-  "linkedinUrl": "https://www.linkedin.com/company/example-software/",
-  "companyId": "12345678",
-  "name": "Example Software",
-  "description": "Software for business teams.",
-  "tagline": null,
-  "websiteUrl": "https://example.com/",
-  "phone": null,
-  "industry": "Software Development",
-  "industryId": null,
-  "companySize": "51-200 employees",
-  "employeeCountRange": { "start": 51, "end": 200 },
-  "employeeCount": 125,
-  "followersCount": 2400,
-  "foundedYear": 2015,
-  "specialities": ["Software", "Data"],
-  "headquarters": "Oslo, Norway",
-  "headquarter": {
-    "street": "Example street 1",
-    "city": "Oslo",
-    "geographicArea": null,
-    "postalCode": "0150",
-    "country": "NO"
+[
+  {
+    "input": "https://www.linkedin.com/company/apify/",
+    "status": "FOUND",
+    "name": "Apify",
+    "companyId": "10608457",
+    "websiteUrl": "https://apify.com/",
+    "industry": "Technology, Information and Internet",
+    "employeeCount": 274,
+    "employeeCountRange": {
+      "start": 201,
+      "end": 500
+    },
+    "followersCount": 47085,
+    "foundedYear": 2016,
+    "scrapedAt": "2026-11-07T00:01:35.458Z"
   },
-  "locations": [],
-  "logoUrl": null,
-  "coverImageUrl": null,
-  "organizationType": "Privately Held",
-  "pageType": "COMPANY",
-  "jobSearchUrl": null,
-  "httpStatus": 200,
-  "attempts": 1,
-  "scrapedAt": "2026-11-07T12:00:00.000Z"
-}
+  {
+    "input": "https://www.linkedin.com/company/cognitedata/",
+    "status": "FOUND",
+    "name": "Cognite",
+    "companyId": "18045548",
+    "websiteUrl": "https://www.cognite.com/en",
+    "industry": "Software Development",
+    "employeeCount": 933,
+    "employeeCountRange": {
+      "start": 501,
+      "end": 1000
+    },
+    "followersCount": 122124,
+    "foundedYear": 2016,
+    "scrapedAt": "2026-11-07T00:01:36.410Z"
+  }
+]
 ```
 
 Important field details:
@@ -138,7 +135,27 @@ Failed lookups remain in the dataset with `input`, `requestedUrl`, `status`, `re
 
 The key-value store's `SUMMARY` record counts found, missing, blocked and failed lookups. Some failures in a batch do not discard the companies that succeeded.
 
-## What is included in this first version?
+## Same-input comparison with Bebity
+
+On **7 November 2026 (Europe/Oslo)**, we ran this Actor and [Bebity's LinkedIn Companies & Profiles scraper](https://apify.com/bebity/linkedin-premium-actor) against the same four direct company URLs: Microsoft, Cognite, Apify and Cisco. Both runs used 512 MB. Spiderly used direct requests with no proxy; Bebity used its default internal configuration. Both were invoked through Apify MCP during the same session.
+
+| Measured result | Spiderly | Bebity |
+| --- | --- | --- |
+| Company URLs submitted | 4 | 4 |
+| Company profiles returned with data | 4 | 0 |
+| Dataset rows | 4 | 4 |
+| Failed lookup rows | 0 | 4: `NOT_FOUND`, reason `UNREACHABLE` |
+| Process status | `SUCCEEDED` | `SUCCEEDED` |
+| Run time | 6.322 seconds | 18.498 seconds |
+| Compute units | 0.00087806 CU | 0.00256917 CU |
+
+**Four rows do not necessarily mean four company profiles.** In this sample, every Bebity row was an unsuccessful lookup. We also checked its `/company/microsoft` path format, which returned `UNREACHABLE`, and a `Cognite` company-name search, which produced no profile.
+
+This is a small availability test, not proof of general superiority. Because the reference returned no company data, we cannot establish field-level accuracy, equal feature coverage or a fair cost per successful company. Bebity documents additional capabilities—including keyword company search, people profiles, coordinates, industry IDs and verification data—that this public-page Actor does not claim to reproduce. Do not infer that missing fields agree just because both runs completed.
+
+[Spiderly test run](https://console.apify.com/actors/runs/WGfobFPceaUEBob3f) · [Bebity test run](https://console.apify.com/actors/runs/i2Sn0aoIuKCWL20BX). These run links may require access to the account that ran the tests. Runtime and counts describe this sample only; they are not guarantees.
+
+## What is included in this version?
 
 This Actor focuses on **bulk company-page lookup**. It does not currently include broad keyword company discovery, LinkedIn people profiles, employee lists, Sales Navigator, company posts, private contact enrichment or authenticated-only data. It does not claim full feature parity with a combined companies-and-people scraper.
 
@@ -148,7 +165,7 @@ Verification badges, active status, arbitrary company hashtags and latitude/long
 
 Use Apify's API, schedules, webhooks and integrations to connect your company data to other tools. Read the dataset for company results and the `SUMMARY` record for batch health. Always keep your API token private.
 
-The Actor uses HTTP requests and parses public HTML and structured data. Cost depends on your Apify plan, proxy configuration, timeouts, redirects and retries. Enabling a proxy can add charges. Start with a small test; no fixed price or speed is guaranteed.
+The Actor has no added developer fee at publication; normal Apify platform usage still applies. The Actor uses HTTP requests and parses public HTML and structured data. Cost depends on your Apify plan, proxy configuration, timeouts, redirects and retries. Enabling a proxy can add charges. Start with a small test; no fixed price or speed is guaranteed.
 
 ## Troubleshooting
 
@@ -156,7 +173,7 @@ The Actor uses HTTP requests and parses public HTML and structured data. Cost de
 
 **My company name is rejected.** Use its exact LinkedIn company URL or slug. A business name such as `Example Software AS` is not necessarily its LinkedIn slug.
 
-**Some values are empty.** The public company page may not include them. No value is invented to fill a missing field.
+**Some values are empty.** The public company page may not include them. No value is invented to fill a missing field. Follower counts use the visible company header or the company page metadata; compact labels such as 1.2M are rounded values from LinkedIn.
 
 **A run failed but has rows.** Check their statuses. A batch with no successfully parsed company pages is deliberately marked failed so an empty or blocked scrape is visible.
 

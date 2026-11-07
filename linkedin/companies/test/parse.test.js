@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { normalizeCompanyUrl, employeeRange, externalUrl, parseCompanyPage, classifyResponse } from '../src/parse.js';
+import { normalizeCompanyUrl, employeeRange, externalUrl, parseCompanyPage, classifyResponse, parseFollowerCount } from '../src/parse.js';
 const url = 'https://www.linkedin.com/company/example/';
 const fixture = `<script type="application/ld+json">invalid</script><script type="application/ld+json">${JSON.stringify({ '@graph': [
     { '@type': 'SocialMediaPosting', author: { '@type': 'Organization', name: 'Other Company' } },
@@ -37,6 +37,19 @@ test('does not invent numbers, verification state, coordinates or missing fields
 test('does not treat a login wall or generic error as a company', () => {
     assert.equal(parseCompanyPage('<h1>Sign in</h1>',url),null);
     assert.equal(parseCompanyPage('<h1>Page not found</h1>',url),null);
+});
+
+test('reads company tagline and own-page follower metadata when the location subline is absent', () => {
+    const row = parseCompanyPage('<meta name="description" content="Example | 47,085 followers on LinkedIn. Company introduction."><h1 class="top-card-layout__title">Example</h1><section data-test-id="about-us"></section><div class="top-card-layout__second-subline">Tools for business</div>',url);
+    assert.equal(row.followersCount,47085);
+    assert.equal(row.tagline,'Tools for business');
+});
+
+test('preserves zero followers and parses rounded compact labels without inventing missing counts', () => {
+    assert.equal(parseFollowerCount('0 followers'),0);
+    assert.equal(parseFollowerCount('1.2M followers'),1200000);
+    assert.equal(parseFollowerCount('47,085 followers'),47085);
+    assert.equal(parseFollowerCount('No public count'),null);
 });
 test('unwraps public website redirect and rejects unsafe or LinkedIn URLs', () => {
     assert.equal(externalUrl('https://www.linkedin.com/redir/redirect?url=https%3A%2F%2Fexample.com%2F'),'https://example.com/');
