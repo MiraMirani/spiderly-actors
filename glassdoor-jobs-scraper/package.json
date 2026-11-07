@@ -1,0 +1,19 @@
+{
+    "name": "glassdoor-jobs-scraper",
+    "version": "0.1.0",
+    "type": "module",
+    "description": "Collect public Glassdoor job cards in a structured dataset.",
+    "engines": {
+        "node": ">=22"
+    },
+    "dependencies": {
+        "apify": "3.7.2",
+        "cheerio": "1.2.0",
+        "playwright": "1.58.2"
+    },
+    "scripts": {
+        "start": "node ./src/main.js",
+        "test": "node --test"
+    },
+    "license": "ISC"
+}

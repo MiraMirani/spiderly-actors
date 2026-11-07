@@ -1,0 +1,107 @@
+{
+  "actorSpecification": 1,
+  "fields": {
+    "type": "object",
+    "properties": {
+      "jobId": {
+        "type": "string"
+      },
+      "title": {
+        "type": "string"
+      },
+      "company": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "companyRating": {
+        "type": [
+          "number",
+          "null"
+        ]
+      },
+      "location": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "jobUrl": {
+        "type": "string"
+      },
+      "easyApplyBadge": {
+        "type": "boolean"
+      },
+      "salaryRaw": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "salaryMin": {
+        "type": [
+          "number",
+          "null"
+        ]
+      },
+      "salaryMax": {
+        "type": [
+          "number",
+          "null"
+        ]
+      },
+      "salaryCurrency": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "salaryPeriod": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "salarySource": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "snippet": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "sourceUrl": {
+        "type": "string"
+      }
+    }
+  },
+  "views": {
+    "jobs": {
+      "title": "Jobs",
+      "transformation": {
+        "fields": [
+          "title",
+          "company",
+          "location",
+          "salaryRaw",
+          "companyRating",
+          "jobUrl"
+        ]
+      },
+      "display": {
+        "component": "table",
+        "properties": {
+          "jobUrl": {
+            "label": "Job listing",
+            "format": "link"
+          }
+        }
+      }
+    }
+  }
+}

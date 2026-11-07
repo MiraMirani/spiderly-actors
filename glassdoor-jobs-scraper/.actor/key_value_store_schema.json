@@ -1,0 +1,13 @@
+{
+  "title": "Run summary",
+  "collections": {
+    "summary": {
+      "title": "Job totals and search status",
+      "key": "SUMMARY",
+      "contentTypes": [
+        "application/json"
+      ]
+    }
+  },
+  "actorKeyValueStoreSchemaVersion": 1
+}

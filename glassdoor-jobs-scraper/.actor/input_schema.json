@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "title": "Glassdoor Jobs Scraper",
+  "description": "Collect the visible cards from US Glassdoor job search results.",
+  "type": "object",
+  "properties": {
+    "searchUrls": {
+      "title": "Glassdoor search URLs",
+      "type": "array",
+      "description": "Paste up to five public job search URLs from www.glassdoor.com.",
+      "editor": "requestListSources",
+      "prefill": [
+        {
+          "url": "https://www.glassdoor.com/Job/Software-Engineer-New-York-SRCH_KO0%2C17_IL.18%2C26_IC1132348.htm"
+        }
+      ]
+    },
+    "maxItems": {
+      "title": "Maximum jobs",
+      "type": "integer",
+      "description": "Maximum unique jobs across all searches.",
+      "default": 20,
+      "minimum": 1,
+      "maximum": 100
+    },
+    "maxPages": {
+      "title": "Maximum batches per search",
+      "type": "integer",
+      "description": "The initial results count as one batch. Additional batches use Show more jobs.",
+      "default": 1,
+      "minimum": 1,
+      "maximum": 5
+    }
+  }
+}
