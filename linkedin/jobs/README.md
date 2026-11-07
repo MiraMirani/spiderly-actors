@@ -1,8 +1,8 @@
-# LinkedIn Jobs Scraper — Fast, Multi-Keyword
+[![Spiderly LinkedIn Jobs Scraper: search, extract and build](https://raw.githubusercontent.com/MiraMirani/spiderly-actors/d9f7263990e3aca20051c36f2e179acc9bd92696/assets/banners/linkedin-jobs.png)](https://apify.com/spiderly/linkedin-jobs-scraper-fast-multi-keyword)
 
-![Spiderly LinkedIn Jobs Scraper: search, extract and build](https://raw.githubusercontent.com/MiraMirani/spiderly-actors/d9f7263990e3aca20051c36f2e179acc9bd92696/assets/banners/linkedin-jobs.png)
+## What does LinkedIn Jobs Scraper do?
 
-Turn public LinkedIn job listings into structured data for recruiting, job alerts and hiring research. Search multiple keywords and locations in one run, collect full descriptions and applicant information, and export your results as JSON, CSV or Excel. **No LinkedIn account, login or cookies required.**
+Turn public [LinkedIn job listings](https://www.linkedin.com/jobs/) into structured data for recruiting, job alerts and hiring research. Search multiple keywords and locations in one run, collect full descriptions and applicant information, and export your results as JSON, CSV or Excel. **No LinkedIn account, login or cookies required.**
 
 When the public ad includes them, Spiderly also extracts **recruiter details, salary ranges, contact emails and Norwegian phone numbers**. Optional company enrichment adds public company information.
 
@@ -96,45 +96,47 @@ A maximum is a cap, not a promise of that many results. Narrow searches, filteri
 
 ## Output example
 
-Each dataset item represents one job. This shortened example is fictional and demonstrates field names and value types:
+Each dataset item represents one job. These shortened records are from the live 7 November 2026 sample, not invented examples. The full dataset also includes descriptions, recruiter fields, ad contact arrays and search metadata. Personal contact details are omitted from these public examples. You can download the dataset as JSON, HTML, CSV or Excel.
 
 ```json
-{
-  "id": "4400000001",
-  "url": "https://www.linkedin.com/jobs/view/4400000001",
-  "title": "Software Engineer",
-  "company": "Example Software AS",
-  "companyUrl": "https://www.linkedin.com/company/example-software",
-  "companyId": "12345678",
-  "location": "Oslo, Norway",
-  "postedDate": "2026-11-01",
-  "postedAgo": "2 days ago",
-  "applicants": "Be among the first 25 applicants",
-  "employmentType": "Full-time",
-  "seniorityLevel": "Mid-Senior level",
-  "jobFunction": "Engineering and Information Technology",
-  "industries": "Software Development",
-  "salary": "NOK 800,000.00/yr - NOK 1,000,000.00/yr",
-  "salaryMin": 800000,
-  "salaryMax": 1000000,
-  "salaryCurrency": "NOK",
-  "salaryPeriod": "YEAR",
-  "posterFullName": "Example Recruiter",
-  "posterTitle": "Talent Acquisition Partner",
-  "posterProfileUrl": "https://www.linkedin.com/in/example-recruiter",
-  "posterPhoto": "",
-  "contactEmails": ["careers@example.com"],
-  "contactPhones": [],
-  "applyType": "EXTERNAL",
-  "applyUrl": "https://www.linkedin.com/jobs/view/4400000001",
-  "description": "Build software with our team. Contact careers@example.com.",
-  "descriptionHtml": "<p>Build software with our team. Contact careers@example.com.</p>",
-  "companyLogo": "",
-  "rank": 1,
-  "searchKeywords": "software engineer",
-  "searchLocation": "Norway",
-  "scrapedAt": "2026-11-03T12:00:00.000Z"
-}
+[
+  {
+    "id": "4478550557",
+    "url": "https://www.linkedin.com/jobs/view/4478550557",
+    "title": "Software Engineer",
+    "company": "Cisco",
+    "location": "Norway",
+    "postedDate": "2026-11-02",
+    "applicants": "163 applicants",
+    "employmentType": "Full-time",
+    "seniorityLevel": "Not Applicable",
+    "salary": "",
+    "salaryMin": null,
+    "salaryMax": null,
+    "salaryCurrency": "",
+    "salaryPeriod": "",
+    "applyType": "EXTERNAL",
+    "applyUrl": "https://www.linkedin.com/jobs/view/4478550557"
+  },
+  {
+    "id": "4486993384",
+    "url": "https://www.linkedin.com/jobs/view/4486993384",
+    "title": "Senior Software Engineer | Platform Engineering | Kubernetes",
+    "company": "Opus Resourcing Ltd",
+    "location": "Oslo, Norway",
+    "postedDate": "2026-11-06",
+    "applicants": "Be among the first 25 applicants",
+    "employmentType": "Full-time",
+    "seniorityLevel": "Mid-Senior level",
+    "salary": "NOK 900,000.00/yr - NOK 1,100,000.00/yr",
+    "salaryMin": 900000,
+    "salaryMax": 1100000,
+    "salaryCurrency": "NOK",
+    "salaryPeriod": "YEAR",
+    "applyType": "EASY_APPLY",
+    "applyUrl": "https://www.linkedin.com/jobs/view/4486993384"
+  }
+]
 ```
 
 `applicants` is text, not an exact integer. Salary numbers are parsed from the advertised text, not estimated or currency-converted. Missing salary numbers are `null`; missing text is usually an empty string. Contact arrays are empty when there is no match. Norwegian-style phone extraction can include false matches; review results before use.
@@ -154,6 +156,31 @@ This adds requests. LinkedIn may block a company page even when its jobs are pub
 **`applyType: "EXTERNAL"` does not guarantee that `applyUrl` leads to the employer's careers site.** LinkedIn often hides the actual destination from logged-out visitors.
 
 The Actor returns an apply URL when it appears in the public response. If none is exposed, it falls back to the LinkedIn job URL. This also provides a usable job link for Easy Apply listings. A LinkedIn fallback is not a resolved external application link. Full coverage of employer application pages is not supported by this version.
+
+## Same-search comparison with Bebity
+
+On **7 November 2026 (Europe/Oslo)**, we ran this Actor and [Bebity's LinkedIn Jobs scraper](https://apify.com/bebity/linkedin-jobs-scraper) for **software engineer · Norway · past week · maximum 10 jobs**. Company enrichment and Bebity's premium hiring-contact add-on were disabled. Spiderly used direct requests without a proxy; Bebity used its own internal request configuration.
+
+| Observed result | Spiderly | Bebity |
+| --- | --- | --- |
+| Final dataset jobs | 10 | 10 |
+| Matching job IDs | Same 10 IDs | Same 10 IDs |
+| Run time | 4.192 seconds | 27.114 seconds |
+| Allocated memory | 512 MB | 1,024 MB |
+| Parsed salary ranges | 1 | 1 |
+| Jobs with a recruiter name | 1 | 1 |
+| Jobs with an email extracted from the ad | 2 | 0 |
+| Jobs with a phone extracted from the ad | 1 | 0 |
+| Non-LinkedIn apply URLs | 0 | 3 |
+| Observed charge | Approximately $0.001, rounded by Console | $0.01505: ten job events plus one start event |
+
+The ten matched jobs agreed on title, company, location, applicant text, employment type, seniority and apply type. Their description text also matched after Unicode/whitespace normalization and removal of line-leading list bullets; HTML and presentation are not claimed to be byte-identical.
+
+**Bebity returned three external-host apply URLs that Spiderly did not return.** Spiderly fell back to the LinkedIn job URL. Those three URLs are observed output links; this test did not verify whether the destination application forms remain open. This Actor still does not offer full external application-link resolution.
+
+These are results from one small test, not a general speed, price or completeness guarantee. Both calls requested 512 MB, but Bebity's run settings used 1,024 MB, so this is not a controlled same-hardware benchmark. Apify pricing differs by model and plan; Spiderly's Console total is rounded and excludes ongoing timed storage. The final counts come from the fetched dataset rows, because run metadata initially lagged behind writes.
+
+[Spiderly test run](https://console.apify.com/actors/runs/Ogckhewg0mURLymA7) · [Bebity test run](https://console.apify.com/actors/runs/Vrh34LHBCgvlCUuwf). Run links may require access to the account that ran the tests. Repeat the sample with current data before relying on its performance or coverage.
 
 ## API and automation
 
