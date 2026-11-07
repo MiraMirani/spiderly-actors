@@ -1,12 +1,15 @@
 import { Actor, log } from 'apify';
 import { chromium } from 'playwright';
 import { cardSelector, origin, parseCards, sampleSearch, searchUrl } from './cards.js';
+import { providerActor, providerInput, providerRows } from './provider.js';
 
 const summary = { jobs: 0, searches: [] };
 let browser;
+let activeProviderRun;
 await Actor.init();
 Actor.on('aborting', async () => {
     await browser?.close();
+    if (activeProviderRun) await Actor.abort(activeProviderRun).catch(() => log.warning('Could not stop the upstream run.'));
     await Actor.setValue('SUMMARY', summary);
     await Actor.exit();
 });
@@ -14,25 +17,33 @@ Actor.on('aborting', async () => {
 try {
     const input = await Actor.getInput() ?? {};
     const {
-        searchUrls = [sampleSearch], maxItems = 20, maxPages = 1, savedHtml,
+        searchUrls, maxItems = 20, maxPages = 1, savedHtml,
         proxyConfiguration = { useApifyProxy: true, apifyProxyGroups: ['RESIDENTIAL'] },
     } = input;
-    if (!Array.isArray(searchUrls) || searchUrls.length < 1 || searchUrls.length > 5
-        || !Number.isInteger(maxItems) || maxItems < 1 || maxItems > 100
-        || !Number.isInteger(maxPages) || maxPages < 1 || maxPages > 5) {
-        throw new Error('Use 1–5 search URLs, a result limit of 1–100, and a page limit of 1–5.');
+    if (!Number.isInteger(maxItems) || maxItems < 1 || maxItems > 100) {
+        throw new Error('Set the result limit to a whole number between 1 and 100.');
     }
-    const urls = [...new Set(searchUrls.map(searchUrl))];
     if (savedHtml !== undefined && typeof savedHtml !== 'string') {
         throw new Error('Saved search HTML must be a string.');
     }
-    if (savedHtml?.trim()) {
+    const mode = input.mode ?? (savedHtml?.trim() ? 'saved_html' : input.keyword ? 'keyword' : 'direct');
+    if (!['keyword', 'url', 'saved_html', 'direct'].includes(mode)) throw new Error('Choose a valid search mode.');
+    const urlInputs = searchUrls ?? (mode === 'direct' ? [sampleSearch] : []);
+    let urls = [];
+    if (mode !== 'keyword') {
+        if (!Array.isArray(urlInputs) || urlInputs.length < 1 || urlInputs.length > 5) {
+            throw new Error('Enter 1–5 Glassdoor search URLs.');
+        }
+        urls = [...new Set(urlInputs.map(searchUrl))];
+    }
+    summary.mode = mode;
+    if (mode === 'saved_html') {
+        if (!savedHtml?.trim()) throw new Error('Paste the saved search HTML.');
         if (!input.searchUrls || urls.length !== 1 || Buffer.byteLength(savedHtml) > 8 * 1024 * 1024) {
             throw new Error('Import one saved search of up to 8 MB and provide its original Glassdoor search URL.');
         }
         const [url] = urls;
         const rows = parseCards(savedHtml, url).slice(0, maxItems);
-        summary.mode = 'saved_html';
         summary.searches.push({
             url, pages: 1, jobs: rows.length, status: rows.length ? 'ok' : 'unavailable',
         });
@@ -40,9 +51,35 @@ try {
         await Actor.pushData(rows);
         summary.jobs = rows.length;
         log.info('Imported saved Glassdoor jobs', { jobs: rows.length });
-    } else {
-        summary.mode = 'live';
+    } else if (mode === 'direct') {
+        if (!Number.isInteger(maxPages) || maxPages < 1 || maxPages > 5) {
+            throw new Error('Set the direct search batch limit to a whole number between 1 and 5.');
+        }
         await collectLive(urls, maxItems, maxPages, proxyConfiguration);
+    } else {
+        const upstreamInput = providerInput(input, mode, urls, maxItems);
+        if (!Actor.isAtHome()) throw new Error('Run keyword and URL searches on Apify. Saved HTML is supported locally.');
+        const { providerBudgetUsd = 0.30 } = input;
+        if (!Number.isFinite(providerBudgetUsd) || providerBudgetUsd < 0.01 || providerBudgetUsd > 1) {
+            throw new Error('Set the upstream budget between $0.01 and $1.');
+        }
+        const started = await Actor.apifyClient.actor(providerActor).start(upstreamInput, {
+            memory: 512, timeout: 120, maxTotalChargeUsd: providerBudgetUsd,
+        });
+        activeProviderRun = started.id;
+        summary.providerRunId = started.id;
+        const run = await Actor.apifyClient.run(started.id).waitForFinish();
+        activeProviderRun = undefined;
+        summary.providerStatus = run.status;
+        if (!run.defaultDatasetId) throw new Error('The upstream search did not produce a dataset.');
+        const { items } = await Actor.apifyClient.dataset(run.defaultDatasetId).listItems({ limit: maxItems + 10 });
+        const phrase = mode === 'keyword' && input.titleMatch === 'phrase' ? upstreamInput.keywords[0] : null;
+        const rows = providerRows(items, urls.length === 1 ? urls[0] : null, phrase, maxItems);
+        if (rows.length) await Actor.pushData(rows);
+        summary.jobs = rows.length;
+        summary.upstreamRows = items.length;
+        if (run.status !== 'SUCCEEDED') throw new Error('Upstream search ended with status ' + run.status + '. See SUMMARY.');
+        if (!rows.length) log.info('No usable jobs matched this search. See SUMMARY.');
     }
 } catch (error) {
     summary.error = error.message;

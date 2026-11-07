@@ -76,7 +76,10 @@
         ]
       },
       "sourceUrl": {
-        "type": "string"
+        "type": [
+          "string",
+          "null"
+        ]
       }
     }
   },

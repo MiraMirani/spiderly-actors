@@ -1,25 +1,199 @@
 {
   "schemaVersion": 1,
   "title": "Glassdoor Jobs Scraper",
-  "description": "Collect visible job cards from a US Glassdoor search URL or import a page saved from your browser.",
+  "description": "Search Glassdoor by job title and location, or use a search URL or a saved results page.",
   "type": "object",
   "properties": {
+    "mode": {
+      "title": "Search method",
+      "type": "string",
+      "description": "Choose which inputs to use. Live keyword searches call an upstream Apify Actor that can charge for results.",
+      "editor": "select",
+      "enum": [
+        "keyword",
+        "url",
+        "saved_html"
+      ],
+      "enumTitles": [
+        "Keyword and location",
+        "Glassdoor search URL",
+        "Saved browser page"
+      ],
+      "prefill": "keyword",
+      "sectionCaption": "Search method"
+    },
+    "keyword": {
+      "title": "Job title or keywords",
+      "type": "string",
+      "description": "Search for a role or skill.",
+      "editor": "textfield",
+      "prefill": "software engineer",
+      "maxLength": 200,
+      "sectionCaption": "Search by keyword",
+      "sectionDescription": "Enter a job title and optional location. The filters below apply to this method."
+    },
+    "titleMatch": {
+      "title": "Title match",
+      "type": "string",
+      "description": "Keep all matching jobs or require the exact phrase in the title. Phrase matching can return fewer rows than the result limit.",
+      "editor": "select",
+      "enum": [
+        "any",
+        "phrase"
+      ],
+      "enumTitles": [
+        "Keep all search matches",
+        "Title contains keyword phrase"
+      ],
+      "default": "any"
+    },
+    "location": {
+      "title": "Location",
+      "type": "string",
+      "description": "City, region or country. Leave blank to search all locations.",
+      "editor": "textfield",
+      "prefill": "New York, NY",
+      "maxLength": 150
+    },
+    "datePosted": {
+      "title": "Date posted",
+      "type": "string",
+      "description": "Limit keyword results by posting age.",
+      "editor": "select",
+      "enum": [
+        "any",
+        "1",
+        "3",
+        "7",
+        "14",
+        "30"
+      ],
+      "enumTitles": [
+        "Any time",
+        "Past day",
+        "Past 3 days",
+        "Past week",
+        "Past 2 weeks",
+        "Past month"
+      ],
+      "default": "any",
+      "sectionCaption": "Job filters"
+    },
+    "jobType": {
+      "title": "Job type",
+      "type": "string",
+      "description": "Limit keyword results by employment type.",
+      "editor": "select",
+      "enum": [
+        "any",
+        "fulltime",
+        "parttime",
+        "contract",
+        "internship",
+        "temporary"
+      ],
+      "enumTitles": [
+        "Any type",
+        "Full-time",
+        "Part-time",
+        "Contract",
+        "Internship",
+        "Temporary"
+      ],
+      "default": "any"
+    },
+    "remoteOnly": {
+      "title": "Remote jobs only",
+      "type": "boolean",
+      "description": "Keep jobs Glassdoor marks as remote.",
+      "default": false
+    },
+    "easyApplyOnly": {
+      "title": "Easy Apply only",
+      "type": "boolean",
+      "description": "Keep jobs Glassdoor marks as Easy Apply.",
+      "default": false
+    },
+    "minRating": {
+      "title": "Minimum company rating",
+      "type": "string",
+      "description": "Limit keyword results by company rating.",
+      "editor": "select",
+      "enum": [
+        "any",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "enumTitles": [
+        "Any rating",
+        "1 star",
+        "2 stars",
+        "3 stars",
+        "4 stars"
+      ],
+      "default": "any"
+    },
+    "minSalary": {
+      "title": "Minimum yearly salary",
+      "type": "integer",
+      "description": "Optional minimum salary in the search country’s currency.",
+      "minimum": 0
+    },
+    "seniorityLevel": {
+      "title": "Seniority",
+      "type": "string",
+      "description": "Limit keyword results by seniority.",
+      "editor": "select",
+      "enum": [
+        "any",
+        "internship",
+        "entrylevel",
+        "midseniorlevel",
+        "director",
+        "executive"
+      ],
+      "enumTitles": [
+        "Any level",
+        "Internship",
+        "Entry level",
+        "Mid-senior level",
+        "Director",
+        "Executive"
+      ],
+      "default": "any"
+    },
+    "companySize": {
+      "title": "Company size",
+      "type": "string",
+      "description": "Limit keyword results by number of employees.",
+      "editor": "select",
+      "enum": [
+        "any",
+        "1-200",
+        "201-500",
+        "501-1000",
+        "1001-5000",
+        "5001+"
+      ],
+      "enumTitles": [
+        "Any size",
+        "1–200",
+        "201–500",
+        "501–1,000",
+        "1,001–5,000",
+        "5,001+"
+      ],
+      "default": "any"
+    },
     "searchUrls": {
       "title": "Glassdoor search URLs",
       "type": "array",
       "description": "Paste up to five public job search URLs from www.glassdoor.com.",
       "editor": "requestListSources",
-      "prefill": [
-        {
-          "url": "https://www.glassdoor.com/Job/Software-Engineer-New-York-SRCH_KO0%2C17_IL.18%2C26_IC1132348.htm"
-        }
-      ]
-    },
-    "savedHtml": {
-      "title": "Saved search HTML",
-      "type": "string",
-      "description": "Optional. Paste the HTML of a public search results page saved from your browser. Provide its original search URL above. The Actor reads the supplied HTML without contacting Glassdoor.",
-      "editor": "textarea"
+      "sectionCaption": "Search by URL",
+      "sectionDescription": "Paste your search URL when using URL search or saved-page import."
     },
     "maxItems": {
       "title": "Maximum jobs",
@@ -27,20 +201,38 @@
       "description": "Maximum unique jobs across all searches.",
       "default": 20,
       "minimum": 1,
-      "maximum": 100
+      "maximum": 100,
+      "sectionCaption": "Result limits"
+    },
+    "providerBudgetUsd": {
+      "title": "Maximum upstream charge (USD)",
+      "type": "number",
+      "description": "Caps the upstream Actor charge. Spiderly’s own Apify usage is separate.",
+      "default": 0.3,
+      "minimum": 0.01,
+      "maximum": 1
+    },
+    "savedHtml": {
+      "title": "Saved search HTML",
+      "type": "string",
+      "description": "Optional. Paste the HTML of a public search results page saved from your browser. Provide its original search URL above. The Actor reads the supplied HTML without contacting Glassdoor.",
+      "editor": "textarea",
+      "sectionCaption": "Saved browser page",
+      "sectionDescription": "Use only when importing a page already saved from your browser."
     },
     "maxPages": {
       "title": "Maximum batches per search",
       "type": "integer",
-      "description": "The initial results count as one batch. Additional batches use Show more jobs.",
+      "description": "Batch limit for the original direct browser mode used by existing API inputs.",
       "default": 1,
       "minimum": 1,
-      "maximum": 5
+      "maximum": 5,
+      "sectionCaption": "Direct browser settings"
     },
     "proxyConfiguration": {
       "title": "Proxy configuration",
       "type": "object",
-      "description": "Glassdoor blocks datacenter IPs. Keep the Apify residential proxy (default).",
+      "description": "Apify proxy for the original direct browser mode.",
       "editor": "proxy",
       "default": {
         "useApifyProxy": true,
