@@ -1,6 +1,16 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { providerInput, providerRows } from '../src/provider.js';
+import { providerInput, providerRows, providerRunOptions } from '../src/provider.js';
+
+test('gives enriched runs more resources while reserving time for dataset import', () => {
+    const now = 1000;
+    assert.deepEqual(providerRunOptions({ includeDescription: true }, 0.15, new Date(now + 180000), now), {
+        memory: 1024, timeout: 160, maxTotalChargeUsd: 0.15,
+    });
+    assert.equal(providerRunOptions({ includeEmployerStats: true }, 0.15, null, now).timeout, 240);
+    assert.equal(providerRunOptions({}, 0.08, null, now).memory, 512);
+    assert.throws(() => providerRunOptions({}, 0.08, new Date(now + 30000), now));
+});
 
 test('passes only supported keyword search parameters to the provider', () => {
     const input = providerInput({

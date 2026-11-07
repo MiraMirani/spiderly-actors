@@ -1,7 +1,7 @@
 import { Actor, log } from 'apify';
 import { chromium } from 'playwright';
 import { cardSelector, origin, parseCards, sampleSearch, searchUrl } from './cards.js';
-import { providerActor, providerInput, providerRows } from './provider.js';
+import { providerActor, providerInput, providerRows, providerRunOptions } from './provider.js';
 
 const summary = { jobs: 0, searches: [] };
 let browser;
@@ -63,14 +63,18 @@ try {
         if (!Number.isFinite(providerBudgetUsd) || providerBudgetUsd < 0.01 || providerBudgetUsd > 1) {
             throw new Error('Set the upstream budget between $0.01 and $1.');
         }
-        const started = await Actor.apifyClient.actor(providerActor).start(upstreamInput, {
-            memory: 512, timeout: 120, maxTotalChargeUsd: providerBudgetUsd,
-        });
+        const options = providerRunOptions(upstreamInput, providerBudgetUsd, Actor.getEnv().timeoutAt);
+        summary.requestedJobs = maxItems;
+        summary.providerTimeoutSecs = options.timeout;
+        summary.providerMemoryMbytes = options.memory;
+        const started = await Actor.apifyClient.actor(providerActor).start(upstreamInput, options);
         activeProviderRun = started.id;
         summary.providerRunId = started.id;
+        await Actor.setValue('SUMMARY', summary);
         const run = await Actor.apifyClient.run(started.id).waitForFinish();
         activeProviderRun = undefined;
         summary.providerStatus = run.status;
+        if (Number.isFinite(run.usageTotalUsd)) summary.providerCostUsd = run.usageTotalUsd;
         if (!run.defaultDatasetId) throw new Error('The upstream search did not produce a dataset.');
         const { items } = await Actor.apifyClient.dataset(run.defaultDatasetId).listItems({ limit: maxItems + 10 });
         const phrase = mode === 'keyword' && input.titleMatch === 'phrase' ? upstreamInput.keywords[0] : null;

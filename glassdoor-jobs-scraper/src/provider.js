@@ -18,6 +18,18 @@ const number = (value, max = Number.MAX_SAFE_INTEGER) => typeof value === 'numbe
     && Number.isFinite(value) && value >= 0 && value <= max ? value : null;
 const flag = (value) => typeof value === 'boolean' ? value : null;
 const strings = (value) => Array.isArray(value) ? value.map(text).filter(Boolean) : [];
+
+export function providerRunOptions(input, budget, parentDeadline, now = Date.now()) {
+    // Leave time to read and save the upstream dataset before the parent expires.
+    const remainingSeconds = parentDeadline ? Math.floor((parentDeadline.getTime() - now) / 1000) - 20 : 240;
+    if (remainingSeconds < 15) throw new Error('Increase the Actor timeout to allow time for the upstream search.');
+    const rich = input.includeDescription || input.includeEmployerStats;
+    return {
+        memory: rich ? 1024 : 512,
+        timeout: Math.min(remainingSeconds, rich ? 240 : 120),
+        maxTotalChargeUsd: budget,
+    };
+}
 const glassdoorUrl = (value, host, prefix) => {
     const url = URL.parse(text(value) ?? '');
     return url?.origin === host && !url.username && !url.password && url.pathname.startsWith(prefix)

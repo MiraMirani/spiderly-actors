@@ -64,4 +64,6 @@ The dataset also includes `snippet` and `sourceUrl`. Missing optional fields use
 
 ## Run summary
 
+Live runs report the upstream run ID, timeout, and memory in **SUMMARY**, plus the upstream charge when Apify supplies it. That charge excludes the parent Actor's platform usage. Enriched searches get more memory and time, subject to the parent run deadline. If the upstream run times out, Spiderly saves any available results and reports the failure.
+
 Open **SUMMARY** in the key-value store for counts by search and any errors. The Actor stops collecting from a search if Glassdoor restricts access. Direct and saved-page runs fail if they collect zero rows. An upstream search that completes successfully can return an empty dataset. Results are limited to public search cards and contain short previews when available.
