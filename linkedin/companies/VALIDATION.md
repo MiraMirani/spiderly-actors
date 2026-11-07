@@ -1,12 +1,14 @@
-# Validation
+# Release validation
 
 Checked on 7 November 2026 (Europe/Oslo).
 
-- Eight parser tests pass, including company identity selection, URL validation, website redirect extraction, missing fields and blocked/not-found classification.
-- Apify CLI validates input, dataset and output schemas.
-- A Node 22 local Actor run collected Microsoft and Cognite. Three inputs containing a duplicate locale URL produced two rows. Both rows have the correct company IDs, company websites and industry. Dataset rows pass the declared JSON Schema.
-- A nonexistent company returned NOT_FOUND (HTTP 404). Numeric company ID 1035 redirected to LinkedIn's /uas/login page; this is classified BLOCKED. Prefer known company slugs or full company URLs for public lookups.
-- Apify deployment: build 0.0.3 succeeded. The cloud test collected Microsoft and Cognite in four seconds, both FOUND. The Console dataset table displays correctly after removing query parameters from the output template. Actor: https://console.apify.com/actors/WONMTG9IP8KU9eOwS (private).
-- Company data is read from the public overview only. Keyword discovery and people/profile scraping are not part of this version.
+- Ten parser tests pass. These cover URL validation, company identity selection, missing fields, website redirects, size ranges, blocked/not-found responses, header taglines and follower metadata fallback.
+- Apify CLI validates the input, dataset and output schemas.
+- Local full-Actor test used `apify run --user-agent apify-codex-plugin/apify-actor-development` against Microsoft, Cognite, Apify and Cisco. All four returned FOUND with company IDs and follower counts.
+- Exact cloud build 0.0.4 was verified through Apify MCP: run r1m1E9StcBvdfwWlo returned four FOUND profiles in 6.556 seconds. All returned rows pass the declared dataset schema. A prior cloud smoke test and duplicate locale-URL test also passed.
+- Same-input reference run i2Sn0aoIuKCWL20BX returned four NOT_FOUND / UNREACHABLE rows in 18.498 seconds. The alternate input check WYERQ1URVSWpgHu6Q returned one failed direct lookup and no search profile. The comparison does not establish field-level accuracy or full feature parity.
+- A nonexistent company returned NOT_FOUND (404). Numeric company ID 1035 redirected to /uas/login; the classifier now reports BLOCKED for that path. Prefer company slugs or full URLs.
+- Company data is read from public company pages only. Keyword discovery, people profiles, coordinates, industry IDs and verification state are not implemented or inferred.
+- The example input uses two company slugs and is suitable for Apify's daily prefill-based smoke test. No LinkedIn account or private session cookies are used.
 
-These checks are examples, not a guarantee of access, freshness or coverage on other company pages. Review the platform run for deployment validation.
+Final README and benchmark snapshot document the exact input sample, observed coverage, actual displayed charge limitations and runtime caveats. These checks are examples, not guarantees of future access or coverage.

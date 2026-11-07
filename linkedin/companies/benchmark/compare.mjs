@@ -37,8 +37,8 @@ const comparablePairs = left.companies.filter((company) => company.status === 'F
     && right.companies.some((other) => other.input === company.input && other.status === 'FOUND')).length;
 const summary = {
     testedAt: manifest.testedAt, inputUrls: manifest.companyUrls,
-    spiderly: { ...left, runId: manifest.spiderly.runId, runTimeSecs: manifest.spiderly.stats?.runTimeSecs, computeUnits: manifest.spiderly.stats?.computeUnits },
-    bebity: { ...right, runId: manifest.bebity.runId, runTimeSecs: manifest.bebity.stats?.runTimeSecs, computeUnits: manifest.bebity.stats?.computeUnits },
+    spiderly: { ...left, runId: manifest.spiderly.runId, runTimeSecs: manifest.spiderly.stats?.runTimeSecs, computeUnits: manifest.spiderly.stats?.computeUnits, costUsd: manifest.spiderly.costUsd, costDisplayUsd: manifest.spiderly.costDisplayUsd, costUpperBoundUsd: manifest.spiderly.costUpperBoundUsd, costSource: manifest.spiderly.costSource },
+    bebity: { ...right, runId: manifest.bebity.runId, runTimeSecs: manifest.bebity.stats?.runTimeSecs, computeUnits: manifest.bebity.stats?.computeUnits, costUsd: manifest.bebity.costUsd, costSource: manifest.bebity.costSource },
     comparableProfiles: comparablePairs,
     interpretation: comparablePairs === 0 ? 'No successful reference profiles are available for field-level accuracy or feature-parity comparison.' : 'Inspect matched company fields; numeric values can change between requests.',
     limitations: manifest.caveats,

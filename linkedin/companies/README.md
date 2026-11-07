@@ -22,6 +22,16 @@ When available on the public overview page:
 
 Each result includes its original input, normalized request URL, timestamp, attempt count and lookup status. Missing information stays `null` or an empty list. Counts and addresses reflect what LinkedIn exposes, not independently verified company records. Banner data is illustrative.
 
+| Field | Type | Meaning |
+| --- | --- | --- |
+| `name`, `companyId`, `linkedinUrl` | text or null | Company identity and source page. |
+| `description`, `tagline`, `industry` | text or null | Public company overview fields. |
+| `websiteUrl` | text or null | Public website link, with LinkedIn redirect unwrapped. |
+| `employeeCount`, `followersCount` | number or null | Public LinkedIn counts; not verified payroll data. |
+| `employeeCountRange` | object or null | Parsed company-size range; open-ended upper bound is null. |
+| `headquarter`, `locations` | object / list | Public structured headquarters and office address text. |
+| `status`, `reason` | text / text or null | Whether the company was found and why a lookup failed. |
+
 ## Start with a company list
 
 1. Paste company page URLs, slugs or IDs into **Company URLs, slugs or IDs**.
@@ -92,7 +102,7 @@ These shortened records come from the 7 November 2026 live validation sample. Fi
     },
     "followersCount": 47085,
     "foundedYear": 2016,
-    "scrapedAt": "2026-11-07T00:01:35.458Z"
+    "scrapedAt": "2026-11-07T00:06:06.317Z"
   },
   {
     "input": "https://www.linkedin.com/company/cognitedata/",
@@ -108,7 +118,7 @@ These shortened records come from the 7 November 2026 live validation sample. Fi
     },
     "followersCount": 122124,
     "foundedYear": 2016,
-    "scrapedAt": "2026-11-07T00:01:36.410Z"
+    "scrapedAt": "2026-11-07T00:06:07.178Z"
   }
 ]
 ```
@@ -137,7 +147,7 @@ The key-value store's `SUMMARY` record counts found, missing, blocked and failed
 
 ## Same-input comparison with Bebity
 
-On **7 November 2026 (Europe/Oslo)**, we ran this Actor and [Bebity's LinkedIn Companies & Profiles scraper](https://apify.com/bebity/linkedin-premium-actor) against the same four direct company URLs: Microsoft, Cognite, Apify and Cisco. Both runs used 512 MB. Spiderly used direct requests with no proxy; Bebity used its default internal configuration. Both were invoked through Apify MCP during the same session.
+On **7 November 2026 (Europe/Oslo)**, we ran this Actor and [Bebity's LinkedIn Companies & Profiles scraper](https://apify.com/bebity/linkedin-premium-actor) against the same four direct company URLs: Microsoft, Cognite, Apify and Cisco. Both runs used 512 MB. Spiderly used direct requests with no proxy; Bebity used its default internal configuration. Both were invoked through Apify MCP during the same session. The final Spiderly verification followed the reference batch by about nine minutes, so this was not a simultaneous controlled speed benchmark.
 
 | Measured result | Spiderly | Bebity |
 | --- | --- | --- |
@@ -146,14 +156,17 @@ On **7 November 2026 (Europe/Oslo)**, we ran this Actor and [Bebity's LinkedIn C
 | Dataset rows | 4 | 4 |
 | Failed lookup rows | 0 | 4: `NOT_FOUND`, reason `UNREACHABLE` |
 | Process status | `SUCCEEDED` | `SUCCEEDED` |
-| Run time | 6.322 seconds | 18.498 seconds |
-| Compute units | 0.00087806 CU | 0.00256917 CU |
+| Run time | 6.556 seconds | 18.498 seconds |
+| Compute units | 0.00091056 CU | 0.00256917 CU |
+| Observed run charge | Console showed $0.000 rounded (less than $0.001) | $0.00005: one start event, zero company events |
+
+Charges use different models: Spiderly incurs normal platform usage, while Bebity bills its event price and does not separately charge platform usage. The Console rounds Spiderly's tiny run charge and excludes ongoing timed storage, so it is not presented as an exact zero. There is no valid cost-per-success comparison when the reference returns no company profiles.
 
 **Four rows do not necessarily mean four company profiles.** In this sample, every Bebity row was an unsuccessful lookup. We also checked its `/company/microsoft` path format, which returned `UNREACHABLE`, and a `Cognite` company-name search, which produced no profile.
 
 This is a small availability test, not proof of general superiority. Because the reference returned no company data, we cannot establish field-level accuracy, equal feature coverage or a fair cost per successful company. Bebity documents additional capabilities—including keyword company search, people profiles, coordinates, industry IDs and verification data—that this public-page Actor does not claim to reproduce. Do not infer that missing fields agree just because both runs completed.
 
-[Spiderly test run](https://console.apify.com/actors/runs/WGfobFPceaUEBob3f) · [Bebity test run](https://console.apify.com/actors/runs/i2Sn0aoIuKCWL20BX). These run links may require access to the account that ran the tests. Runtime and counts describe this sample only; they are not guarantees.
+[Spiderly test run](https://console.apify.com/actors/runs/r1m1E9StcBvdfwWlo) · [Bebity test run](https://console.apify.com/actors/runs/i2Sn0aoIuKCWL20BX). These run links may require access to the account that ran the tests. Runtime and counts describe this sample only; they are not guarantees.
 
 ## What is included in this version?
 
