@@ -1,0 +1,11 @@
+{
+  "name": "spiderly-linkedin-companies",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Bulk public LinkedIn company page extraction without login",
+  "scripts": { "start": "node src/main.js", "test": "node --test test/*.test.js" },
+  "engines": { "node": ">=22" },
+  "dependencies": { "apify": "3.7.2", "cheerio": "1.2.0", "got-scraping": "4.2.2" },
+  "license": "ISC"
+}

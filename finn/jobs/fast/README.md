@@ -1,26 +1,12 @@
-# Finn.no Job Scraper v2 - Fast, Multi-Keyword
+[![Spiderly FINN.no Jobs Scraper](https://raw.githubusercontent.com/MiraMirani/spiderly-actors/732476cc05276e0c13a0f17f5ed18292dfd2746d/assets/banners/finn-jobs.png)](https://apify.com/spiderly/finn-no-job-scraper-fast-multi-keyword)
+
+# Finn.no Job Scraper - Fast, Multi-Keyword
 
 Scrape job ads from **Finn.no**, Norway's largest job board, in seconds. Search several keywords in one run, filter by county or city by name, and get full descriptions, deadlines, employers and coordinates as clean JSON, CSV or Excel.
 
 Built on plain HTTP (no browser), so it is fast and cheap: **200 jobs with full descriptions in about 16 seconds.**
 
-## v1 or v2? What is the difference?
-
-Both versions scrape the same Finn.no job ads and cost the same: **$0.50 per 1,000 jobs**. Pick the one that fits.
-
-| | **v1** (original) | **v2** (recommended) |
-|---|---|---|
-| Keywords | One keyword per run | **Several keywords per run**, duplicates removed |
-| Speed, 200 jobs with full descriptions | about 5 minutes | **about 16 seconds** |
-| Description | Plain text | Plain text **and HTML** |
-| Coordinates (latitude, longitude) | No | **Yes** |
-| Search rank of each job | No | **Yes** |
-| Default memory | 512 MB | 4 GB (faster, same per-result price) |
-| Location by name, Finn search URLs, employer website, deadline, employment type | Yes | Yes |
-
-**Choose v2** for almost everything: it is faster, handles several keywords and returns more fields. **Choose v1** only if you already use it and want the output and behaviour to stay exactly as they are.
-
-## What can Finn.no Job Scraper v2 do?
+## What can Finn.no Job Scraper do?
 
 | 📦 What you can extract | ⚙️ Features |
 |---|---|
@@ -33,9 +19,9 @@ Both versions scrape the same Finn.no job ads and cost the same: **$0.50 per 1,0
 
 Use it for job alerts, labour-market research, recruitment lead generation, salary and skills trend analysis, or to feed your own job board or CRM.
 
-## How much will it cost?
+## Cost
 
-Pay per result: **$0.50 per 1,000 jobs** (that is $0.0005 per job) plus a tiny start fee of $0.00005 per GB of memory (about $0.0002 per run). 200 jobs cost roughly **$0.10**. There are no extra platform-usage charges on top.
+See the Pricing tab and your run’s usage details for current Apify charges.
 
 ## How do I use it?
 

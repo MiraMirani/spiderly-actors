@@ -1,0 +1,309 @@
+{
+  "actorSpecification": 1,
+  "fields": {
+    "type": "object",
+    "properties": {
+      "input": {
+        "type": "string"
+      },
+      "requestedUrl": {
+        "type": "string"
+      },
+      "status": {
+        "type": "string"
+      },
+      "scrapedAt": {
+        "type": "string"
+      },
+      "reason": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "vanityName": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "linkedinUrl": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "companyId": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "name": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "tagline": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "description": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "websiteUrl": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "industry": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "industryId": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "companySize": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "headquarters": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "logoUrl": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "coverImageUrl": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "organizationType": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "pageType": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "jobSearchUrl": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "employeeCount": {
+        "type": [
+          "integer",
+          "null"
+        ]
+      },
+      "followersCount": {
+        "type": [
+          "integer",
+          "null"
+        ]
+      },
+      "foundedYear": {
+        "type": [
+          "integer",
+          "null"
+        ]
+      },
+      "httpStatus": {
+        "type": [
+          "integer",
+          "null"
+        ]
+      },
+      "attempts": {
+        "type": "integer"
+      },
+      "phone": {
+        "type": [
+          "object",
+          "null"
+        ],
+        "properties": {
+          "number": {
+            "type": "string"
+          }
+        }
+      },
+      "employeeCountRange": {
+        "type": [
+          "object",
+          "null"
+        ],
+        "properties": {
+          "start": {
+            "type": "integer"
+          },
+          "end": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          }
+        }
+      },
+      "headquarter": {
+        "type": [
+          "object",
+          "null"
+        ],
+        "properties": {
+          "street": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "city": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "geographicArea": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "postalCode": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "country": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      },
+      "specialities": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "locations": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "address": {
+              "type": "string"
+            },
+            "addressLines": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "headquarter": {
+              "type": "boolean"
+            },
+            "mapUrl": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "required": [
+      "input",
+      "requestedUrl",
+      "status",
+      "reason",
+      "attempts",
+      "scrapedAt"
+    ]
+  },
+  "views": {
+    "companies": {
+      "title": "Companies",
+      "transformation": {
+        "fields": [
+          "name",
+          "status",
+          "industry",
+          "companySize",
+          "followersCount",
+          "websiteUrl",
+          "linkedinUrl",
+          "reason"
+        ]
+      },
+      "display": {
+        "component": "table",
+        "properties": {
+          "name": {
+            "label": "name",
+            "format": "text"
+          },
+          "status": {
+            "label": "status",
+            "format": "text"
+          },
+          "industry": {
+            "label": "industry",
+            "format": "text"
+          },
+          "companySize": {
+            "label": "companySize",
+            "format": "text"
+          },
+          "followersCount": {
+            "label": "followersCount",
+            "format": "text"
+          },
+          "websiteUrl": {
+            "label": "websiteUrl",
+            "format": "link"
+          },
+          "linkedinUrl": {
+            "label": "linkedinUrl",
+            "format": "link"
+          },
+          "reason": {
+            "label": "reason",
+            "format": "text"
+          }
+        }
+      }
+    }
+  }
+}
