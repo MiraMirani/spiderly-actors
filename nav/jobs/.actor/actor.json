@@ -8,6 +8,7 @@
   "input": "./input_schema.json",
   "dockerfile": "../Dockerfile",
   "defaultRunOptions": { "build": "latest", "memoryMbytes": 512, "timeoutSecs": 3600 },
+  "output": {"actorOutputSchemaVersion": 1, "title": "Job results", "properties": {"jobs": {"type": "string", "title": "Jobs dataset", "description": "Job listings collected by this run.", "template": "{{links.apiDefaultDatasetUrl}}/items"}}},
   "storages": {
     "dataset": {
       "actorSpecification": 1,
