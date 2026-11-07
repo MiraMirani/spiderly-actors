@@ -15,9 +15,47 @@ const booleanFilters = ['remoteOnly', 'easyApplyOnly'];
 const text = (value) => typeof value === 'string' ? value.trim() || null : null;
 const number = (value, max = Number.MAX_SAFE_INTEGER) => typeof value === 'number'
     && Number.isFinite(value) && value >= 0 && value <= max ? value : null;
+const glassdoorUrl = (value, host, prefix) => {
+    const url = URL.parse(text(value) ?? '');
+    return url?.origin === host && !url.username && !url.password && url.pathname.startsWith(prefix)
+        ? url.href : null;
+};
+
+function employerProfile(item) {
+    const website = URL.parse(text(item.companyWebsite) ?? '');
+    const profile = {
+        id: number(item.companyId),
+        url: glassdoorUrl(item.companyGlassdoorUrl, origin, '/Overview/'),
+        logoUrl: glassdoorUrl(item.companyLogo, 'https://media.glassdoor.com', '/sql/'),
+        size: text(item.companySize),
+        industry: text(item.companyIndustry),
+        sector: text(item.companySector),
+        headquarters: text(item.companyHeadquarters),
+        foundedYear: number(item.companyFounded, new Date().getUTCFullYear()),
+        website: website?.protocol === 'https:' && !website.username && !website.password ? website.href : null,
+        revenue: text(item.companyRevenue),
+        ownershipType: text(item.companyType),
+        reviewCount: number(item.companyReviewCount),
+        ratingCount: number(item.companyRatingCount),
+        ceoApprovalPercent: number(item.companyCeoApprovalPct, 100),
+        recommendPercent: number(item.companyRecommendPct, 100),
+        businessOutlookPercent: number(item.companyBusinessOutlookPct, 100),
+        careerOpportunitiesRating: number(item.companyCareerOpportunitiesRating, 5),
+        compensationRating: number(item.companyCompensationRating, 5),
+        cultureRating: number(item.companyCultureRating, 5),
+        diversityRating: number(item.companyDiversityRating, 5),
+        seniorManagementRating: number(item.companySeniorManagementRating, 5),
+        workLifeBalanceRating: number(item.companyWorkLifeBalanceRating, 5),
+    };
+    return Object.values(profile).some((value) => value !== null) ? profile : null;
+}
 
 export function providerInput(input, mode, urls, maxItems) {
-    const base = { maxItems, includeDescription: false, includeEmployerStats: false };
+    const { includeDescription = false, includeEmployerStats = false } = input;
+    if (typeof includeDescription !== 'boolean' || typeof includeEmployerStats !== 'boolean') {
+        throw new Error('Description and employer profile options must be true or false.');
+    }
+    const base = { maxItems, includeDescription, includeEmployerStats };
     if (mode === 'url') return { ...base, keywords: [], startUrls: urls };
 
     const { keyword = defaultKeyword, location = defaultLocation, titleMatch = 'any', minSalary } = input;
@@ -67,12 +105,21 @@ export function providerRows(items, urls, phrase, maxItems) {
             easyApplyBadge: item.easyApply === true,
             salaryRaw: null,
             salaryMin: number(item.salaryMin),
+            salaryMedian: number(item.salaryMedian),
             salaryMax: number(item.salaryMax),
             salaryCurrency: text(item.salaryCurrency),
             salaryPeriod: text(item.salaryPeriod),
             salarySource: item.salaryIsEstimate === true ? 'glassdoor_estimate'
                 : item.salaryIsEstimate === false && (item.salaryMin != null || item.salaryMax != null) ? 'employer' : null,
             snippet: text(item.snippet),
+            description: text(item.description),
+            postedDaysAgo: number(item.postedDaysAgo),
+            jobTypes: Array.isArray(item.jobTypes) ? item.jobTypes.map(text).filter(Boolean) : [],
+            skills: Array.isArray(item.skills) ? item.skills.map(text).filter(Boolean) : [],
+            remote: typeof item.remote === 'boolean' ? item.remote : null,
+            workplaceType: text(item.workplaceType),
+            occupation: text(item.occupation),
+            companyProfile: employerProfile(item),
         });
         if (rows.size >= maxItems) break;
     }

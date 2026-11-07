@@ -80,6 +80,194 @@
           "string",
           "null"
         ]
+      },
+      "salaryMedian": {
+        "type": [
+          "number",
+          "null"
+        ]
+      },
+      "description": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "postedDaysAgo": {
+        "type": [
+          "number",
+          "null"
+        ]
+      },
+      "remote": {
+        "type": [
+          "boolean",
+          "null"
+        ]
+      },
+      "workplaceType": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "occupation": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "jobTypes": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "skills": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "companyProfile": {
+        "type": [
+          "object",
+          "null"
+        ],
+        "properties": {
+          "url": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "logoUrl": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "size": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "industry": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "sector": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "headquarters": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "revenue": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "ownershipType": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "id": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "reviewCount": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "ratingCount": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "ceoApprovalPercent": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "recommendPercent": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "businessOutlookPercent": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "careerOpportunitiesRating": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "compensationRating": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "cultureRating": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "diversityRating": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "seniorManagementRating": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "workLifeBalanceRating": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "foundedYear": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "website": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
       }
     }
   },
@@ -93,6 +281,35 @@
           "location",
           "salaryRaw",
           "companyRating",
+          "jobUrl"
+        ]
+      },
+      "display": {
+        "component": "table",
+        "properties": {
+          "jobUrl": {
+            "label": "Job listing",
+            "format": "link"
+          }
+        }
+      }
+    },
+    "details": {
+      "title": "Job details",
+      "transformation": {
+        "fields": [
+          "title",
+          "company",
+          "location",
+          "postedDaysAgo",
+          "jobTypes",
+          "workplaceType",
+          "salaryMin",
+          "salaryMedian",
+          "salaryMax",
+          "salaryCurrency",
+          "salaryPeriod",
+          "description",
           "jobUrl"
         ]
       },

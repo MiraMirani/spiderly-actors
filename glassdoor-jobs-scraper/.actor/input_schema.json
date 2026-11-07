@@ -187,6 +187,19 @@
       ],
       "default": "any"
     },
+    "includeDescription": {
+      "title": "Include full job descriptions",
+      "type": "boolean",
+      "description": "Fetch full descriptions when available. Upstream per-description charges may apply. Keyword and URL modes only.",
+      "default": false,
+      "sectionCaption": "Job and employer details"
+    },
+    "includeEmployerStats": {
+      "title": "Include employer profiles",
+      "type": "boolean",
+      "description": "Fetch company profile data and rating breakdowns when available. Keyword and URL modes only.",
+      "default": false
+    },
     "searchUrls": {
       "title": "Glassdoor search URLs",
       "type": "array",

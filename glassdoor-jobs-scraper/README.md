@@ -22,6 +22,10 @@ Choose **Keyword and location**, enter the role and location, then set a result 
 
 Keyword and URL modes run an upstream Apify Actor with a separate charge cap. The search term, location, filters or search URLs for the selected mode are sent to that Actor. Spiderly's own platform usage is separate. Title phrase matching happens after the upstream search and can return fewer rows than the requested limit.
 
+## Job and employer details
+
+Live searches include median pay, posting age, job types, skills, and work arrangement when the source supplies them. Turn on **Include full job descriptions** to fetch the full text, and **Include employer profiles** to fetch company size, industry, headquarters, and rating breakdowns. The upstream run can charge extra for full descriptions. Missing details remain empty. Saved-page imports continue to use the fields visible on each card.
+
 ## Search by URL
 
 Choose **Glassdoor search URL** and paste up to five supported US results page URLs. URL searches use the filters in those URLs. If a URL is rejected, enter the role and location in keyword mode or import the saved page.
