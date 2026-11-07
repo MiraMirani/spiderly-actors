@@ -1,0 +1,164 @@
+{
+  "actorSpecification": 1,
+  "fields": {
+    "type": "object",
+    "properties": {
+      "bundleId": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "url": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "developer": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "seller": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "developerUrl": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "category": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "contentRating": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "currency": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "version": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "releaseDate": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "updatedAt": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "minimumOsVersion": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "description": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "releaseNotes": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "iconUrl": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "rating": {
+        "type": [
+          "number",
+          "null"
+        ]
+      },
+      "ratingCount": {
+        "type": [
+          "number",
+          "null"
+        ]
+      },
+      "price": {
+        "type": [
+          "number",
+          "null"
+        ]
+      },
+      "genres": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "screenshotUrls": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "appId": {
+        "type": "string"
+      },
+      "country": {
+        "type": "string"
+      },
+      "title": {
+        "type": "string"
+      }
+    }
+  },
+  "views": {
+    "apps": {
+      "title": "Apps",
+      "transformation": {
+        "fields": [
+          "appId",
+          "title",
+          "developer",
+          "category",
+          "version",
+          "rating",
+          "price",
+          "currency",
+          "url"
+        ]
+      },
+      "display": {
+        "component": "table",
+        "properties": {
+          "url": {
+            "label": "App Store",
+            "format": "link"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "actorSpecification": 1,
+  "meta": {
+    "templateId": "js-empty",
+    "generatedBy": "Codex with GPT-6"
+  },
+  "name": "apple-app-store-scraper",
+  "title": "Apple App Store Lookup",
+  "description": "Look up iPhone and iPad app listings in bulk by numeric App Store ID or listing URL.",
+  "version": "0.1",
+  "buildTag": "latest",
+  "input": "./input_schema.json",
+  "output": "./output_schema.json",
+  "storages": {
+    "dataset": "./dataset_schema.json",
+    "keyValueStore": "./key_value_store_schema.json"
+  },
+  "dockerfile": "../Dockerfile",
+  "defaultRunOptions": {
+    "build": "latest",
+    "memoryMbytes": 512,
+    "timeoutSecs": 60
+  }
+}

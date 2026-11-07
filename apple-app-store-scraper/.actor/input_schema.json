@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "title": "Apple App Store Lookup",
+  "description": "Collect App Store listing metadata by numeric ID or app URL.",
+  "type": "object",
+  "properties": {
+    "apps": {
+      "title": "Apps",
+      "type": "array",
+      "description": "Enter up to 50 numeric App Store IDs or apps.apple.com app listing URLs.",
+      "editor": "stringList",
+      "prefill": [
+        "324684580",
+        "570060128",
+        "324715238"
+      ]
+    },
+    "country": {
+      "title": "Country",
+      "type": "string",
+      "description": "Two-letter App Store country code such as US or NO.",
+      "default": "US",
+      "editor": "textfield"
+    }
+  }
+}
