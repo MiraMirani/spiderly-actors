@@ -1,0 +1,11 @@
+---
+description: Keep every Actor README focused on the product and free of competitor content
+alwaysApply: true
+---
+
+# Actor documentation
+
+- Never include competitor names, competitor Actor links, rival comparisons, rankings or comparative benchmark results in any README or Store-facing documentation.
+- Document the Actor's features, inputs, output fields, real examples, known limits, setup and pricing.
+- A request to compare scrapers authorizes testing and reporting to the user; it does not authorize publishing the comparison in an Actor README.
+- Keep future competitive test results in local validation artifacts unless the user explicitly requests another destination.
