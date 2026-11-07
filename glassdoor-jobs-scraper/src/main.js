@@ -13,13 +13,44 @@ Actor.on('aborting', async () => {
 
 try {
     const input = await Actor.getInput() ?? {};
-    const { searchUrls = [sampleSearch], maxItems = 20, maxPages = 1 } = input;
+    const { searchUrls = [sampleSearch], maxItems = 20, maxPages = 1, savedHtml } = input;
     if (!Array.isArray(searchUrls) || searchUrls.length < 1 || searchUrls.length > 5
         || !Number.isInteger(maxItems) || maxItems < 1 || maxItems > 100
         || !Number.isInteger(maxPages) || maxPages < 1 || maxPages > 5) {
         throw new Error('Use 1–5 search URLs, a result limit of 1–100, and a page limit of 1–5.');
     }
     const urls = [...new Set(searchUrls.map(searchUrl))];
+    if (savedHtml !== undefined && typeof savedHtml !== 'string') {
+        throw new Error('Saved search HTML must be a string.');
+    }
+    if (savedHtml?.trim()) {
+        if (!input.searchUrls || urls.length !== 1 || Buffer.byteLength(savedHtml) > 8 * 1024 * 1024) {
+            throw new Error('Import one saved search of up to 8 MB and provide its original Glassdoor search URL.');
+        }
+        const [url] = urls;
+        const rows = parseCards(savedHtml, url).slice(0, maxItems);
+        summary.mode = 'saved_html';
+        summary.searches.push({
+            url, pages: 1, jobs: rows.length, status: rows.length ? 'ok' : 'unavailable',
+        });
+        if (!rows.length) throw new Error('The saved HTML contains no usable Glassdoor job cards. Save the rendered search results page.');
+        await Actor.pushData(rows);
+        summary.jobs = rows.length;
+        log.info('Imported saved Glassdoor jobs', { jobs: rows.length });
+    } else {
+        summary.mode = 'live';
+        await collectLive(urls, maxItems, maxPages);
+    }
+} catch (error) {
+    summary.error = error.message;
+} finally {
+    await browser?.close();
+    await Actor.setValue('SUMMARY', summary);
+}
+if (summary.error) await Actor.fail(summary.error);
+else await Actor.exit();
+
+async function collectLive(urls, maxItems, maxPages) {
     const seen = new Set();
     browser = await chromium.launch();
     const context = await browser.newContext({ serviceWorkers: 'block' });
@@ -71,8 +102,4 @@ try {
     }
     if (!summary.jobs) throw new Error('No public Glassdoor job cards were collected. See SUMMARY for the search status.');
     log.info('Collected Glassdoor jobs', { jobs: summary.jobs });
-} finally {
-    await browser?.close();
-    await Actor.setValue('SUMMARY', summary);
 }
-await Actor.exit();

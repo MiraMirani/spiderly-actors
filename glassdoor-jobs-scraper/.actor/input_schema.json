@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "title": "Glassdoor Jobs Scraper",
-  "description": "Collect the visible cards from US Glassdoor job search results.",
+  "description": "Collect visible job cards from a US Glassdoor search URL or import a page saved from your browser.",
   "type": "object",
   "properties": {
     "searchUrls": {
@@ -14,6 +14,12 @@
           "url": "https://www.glassdoor.com/Job/Software-Engineer-New-York-SRCH_KO0%2C17_IL.18%2C26_IC1132348.htm"
         }
       ]
+    },
+    "savedHtml": {
+      "title": "Saved search HTML",
+      "type": "string",
+      "description": "Optional. Paste the HTML of a public search results page saved from your browser. Provide its original search URL above. The Actor reads the supplied HTML without contacting Glassdoor.",
+      "editor": "textarea"
     },
     "maxItems": {
       "title": "Maximum jobs",

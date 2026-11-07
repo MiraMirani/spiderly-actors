@@ -26,6 +26,12 @@ Collect public job cards from US Glassdoor search pages into an Apify dataset. E
 
 Supply up to five search URLs. The result limit applies across all searches and duplicate listing IDs are removed. Each search starts with one batch. A higher batch limit lets the Actor click **Show more jobs** when it is available.
 
+## Import results from your browser
+
+If the live run reports an access block, open the public search in your browser. Load the job cards you want, then use **Save page as** and choose **HTML only**. Open the HTML file in a text editor and paste its contents into **Saved search HTML**. Enter the original search URL in **Glassdoor search URLs** and run the Actor.
+
+Import mode reads the cards present in the saved file. It makes no requests to Glassdoor, ignores the batch limit, and applies the same unique job limit as a live run. Save a public results page from a signed-out browser so the Actor input contains only public page content.
+
 ## Sample output
 
 Selected fields from a public New York search card. Job listings and their displayed data change over time.

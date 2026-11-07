@@ -41,7 +41,7 @@ export function parseCards(html, sourceUrl) {
         if (!/^\d+$/.test(jobId) || !title || !href || rows.has(jobId)) return;
 
         const url = URL.parse(href, origin);
-        if (url?.origin !== origin || !url.pathname.startsWith('/job-listing/')) return;
+        if (url?.origin !== origin || url.username || url.password || !url.pathname.startsWith('/job-listing/')) return;
         url.search = '';
         url.searchParams.set('jl', jobId);
         url.hash = '';
