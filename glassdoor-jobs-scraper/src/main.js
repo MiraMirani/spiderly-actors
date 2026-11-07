@@ -13,7 +13,7 @@ Actor.on('aborting', async () => {
 
 try {
     const input = await Actor.getInput() ?? {};
-    const { searchUrls = [sampleSearch], maxItems = 20, maxPages = 1 } = input;
+    const { searchUrls = [sampleSearch], maxItems = 20, maxPages = 1, proxyConfiguration = { useApifyProxy: true, apifyProxyGroups: ['RESIDENTIAL'] } } = input;
     if (!Array.isArray(searchUrls) || searchUrls.length < 1 || searchUrls.length > 5
         || !Number.isInteger(maxItems) || maxItems < 1 || maxItems > 100
         || !Number.isInteger(maxPages) || maxPages < 1 || maxPages > 5) {
@@ -21,8 +21,14 @@ try {
     }
     const urls = [...new Set(searchUrls.map(searchUrl))];
     const seen = new Set();
-    browser = await chromium.launch();
-    const context = await browser.newContext({ serviceWorkers: 'block' });
+    // Glassdoor blocks datacenter IPs (HTTP 403), so browse through a residential proxy.
+    const proxyUrl = proxyConfiguration?.useApifyProxy || proxyConfiguration?.proxyUrls?.length
+        ? await (await Actor.createProxyConfiguration(proxyConfiguration)).newUrl() : undefined;
+    const proxy = proxyUrl ? (({ protocol, host, username, password }) => ({
+        server: `${protocol}//${host}`, username: decodeURIComponent(username), password: decodeURIComponent(password),
+    }))(new URL(proxyUrl)) : undefined;
+    browser = await chromium.launch({ proxy });
+    const context = await browser.newContext({ serviceWorkers: 'block', locale: 'en-US' });
     await context.route('**/*', (route) => {
         const request = route.request();
         return new URL(request.url()).origin === origin
