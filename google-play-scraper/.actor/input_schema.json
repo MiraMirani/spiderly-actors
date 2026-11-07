@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "title": "Google Play App Details Scraper",
+  "description": "Look up public Google Play listings in bulk by Android package ID or store URL.",
+  "type": "object",
+  "properties": {
+    "apps": {
+      "title": "Apps",
+      "type": "array",
+      "description": "Enter up to 50 Android package IDs or Google Play app listing URLs.",
+      "editor": "stringList",
+      "prefill": [
+        "com.spotify.music",
+        "com.duolingo",
+        "org.wikipedia"
+      ]
+    },
+    "language": {
+      "title": "Language",
+      "type": "string",
+      "description": "Google Play language code such as en or pt-BR.",
+      "default": "en",
+      "editor": "textfield"
+    },
+    "country": {
+      "title": "Country",
+      "type": "string",
+      "description": "Two-letter Google Play country code such as US or NO.",
+      "default": "US",
+      "editor": "textfield"
+    }
+  }
+}
