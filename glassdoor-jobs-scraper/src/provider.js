@@ -18,7 +18,7 @@ const number = (value, max = Number.MAX_SAFE_INTEGER) => typeof value === 'numbe
 
 export function providerInput(input, mode, urls, maxItems) {
     const base = { maxItems, includeDescription: false, includeEmployerStats: false };
-    if (mode === 'url') return { ...base, startUrls: urls };
+    if (mode === 'url') return { ...base, keywords: [], startUrls: urls };
 
     const { keyword = defaultKeyword, location = defaultLocation, titleMatch = 'any', minSalary } = input;
     if (!text(keyword) || keyword.length > 200 || typeof location !== 'string' || location.length > 150) {
@@ -42,11 +42,13 @@ export function providerInput(input, mode, urls, maxItems) {
     return { ...base, ...filters, keywords: [keyword.trim()], location: location.trim(), minSalary };
 }
 
-export function providerRows(items, sourceUrl, phrase, maxItems) {
+export function providerRows(items, urls, phrase, maxItems) {
     const rows = new Map();
     const match = phrase?.toLowerCase();
     for (const item of items) {
         if (item?.status !== 'ok') continue;
+        const sourceUrl = urls.length ? urls.find((url) => url === item.searchUrl) : null;
+        if (urls.length && !sourceUrl) continue;
         const jobId = text(item.jobId);
         const title = text(item.title);
         const jobUrl = URL.parse(text(item.url) ?? '');

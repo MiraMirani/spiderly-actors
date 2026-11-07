@@ -25,10 +25,14 @@ test('maps valid listings and filters titles without accepting third-party links
         { ...job, url: 'https://example.org/job-listing/example.htm' },
         { ...job, title: 'Product manager' },
         job, job,
-    ], null, 'software engineer', 5);
+    ], [], 'software engineer', 5);
     assert.equal(rows.length, 1);
     assert.equal(rows[0].jobUrl, 'https://www.glassdoor.com/job-listing/example.htm?jl=123');
     assert.equal(rows[0].salarySource, 'employer');
     assert.equal(rows[0].easyApplyBadge, true);
     assert.equal(rows[0].sourceUrl, null);
+    const url = 'https://www.glassdoor.com/Job/jobs.htm';
+    assert.deepEqual(providerInput({}, 'url', [url], 5).keywords, []);
+    assert.deepEqual(providerRows([job], [url], null, 5), []);
+    assert.equal(providerRows([{ ...job, searchUrl: url }], [url], null, 5)[0].sourceUrl, url);
 });

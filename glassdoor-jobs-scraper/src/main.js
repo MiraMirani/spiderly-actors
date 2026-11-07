@@ -74,7 +74,7 @@ try {
         if (!run.defaultDatasetId) throw new Error('The upstream search did not produce a dataset.');
         const { items } = await Actor.apifyClient.dataset(run.defaultDatasetId).listItems({ limit: maxItems + 10 });
         const phrase = mode === 'keyword' && input.titleMatch === 'phrase' ? upstreamInput.keywords[0] : null;
-        const rows = providerRows(items, urls.length === 1 ? urls[0] : null, phrase, maxItems);
+        const rows = providerRows(items, urls, phrase, maxItems);
         if (rows.length) await Actor.pushData(rows);
         summary.jobs = rows.length;
         summary.upstreamRows = items.length;
