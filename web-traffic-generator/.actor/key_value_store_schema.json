@@ -1,0 +1,13 @@
+{
+  "title": "Run summary",
+  "collections": {
+    "summary": {
+      "title": "Visit totals and timing",
+      "key": "SUMMARY",
+      "contentTypes": [
+        "application/json"
+      ]
+    }
+  },
+  "actorKeyValueStoreSchemaVersion": 1
+}

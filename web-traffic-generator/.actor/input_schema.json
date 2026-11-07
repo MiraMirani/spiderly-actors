@@ -1,0 +1,77 @@
+{
+  "title": "Website visit settings",
+  "description": "Send labeled HTTP visits to public endpoints you own or have permission to test.",
+  "type": "object",
+  "schemaVersion": 1,
+  "properties": {
+    "startUrls": {
+      "title": "Website URLs",
+      "type": "array",
+      "editor": "requestListSources",
+      "description": "One to ten public HTTP or HTTPS URLs without credentials, query strings or custom ports.",
+      "prefill": [
+        {
+          "url": "https://example.com/"
+        }
+      ],
+      "minItems": 1,
+      "maxItems": 10
+    },
+    "visitCount": {
+      "title": "Total visits",
+      "description": "Number of visits. Allow at least one for each supplied URL.",
+      "type": "integer",
+      "default": 3,
+      "minimum": 1,
+      "maximum": 50
+    },
+    "concurrency": {
+      "title": "Simultaneous visits",
+      "description": "Maximum visits in progress at once.",
+      "type": "integer",
+      "default": 2,
+      "minimum": 1,
+      "maximum": 5
+    },
+    "intervalMs": {
+      "title": "Request spacing (ms)",
+      "description": "Minimum gap between HTTP request starts.",
+      "type": "integer",
+      "default": 500,
+      "minimum": 250,
+      "maximum": 5000
+    },
+    "timeoutSecs": {
+      "title": "Timeout per visit (seconds)",
+      "description": "Maximum visit duration including DNS and redirects.",
+      "type": "integer",
+      "default": 15,
+      "minimum": 2,
+      "maximum": 45
+    },
+    "requestLabels": {
+      "title": "Request labels",
+      "type": "array",
+      "editor": "stringList",
+      "description": "Rotate between desktop, mobile and tablet labels in your server logs.",
+      "default": [
+        "desktop"
+      ],
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "maxItems": 3,
+      "uniqueItems": true
+    },
+    "discoverLinks": {
+      "title": "Discover site links",
+      "type": "boolean",
+      "description": "Use remaining visits on same-origin links allowed by robots.txt.",
+      "default": false
+    }
+  },
+  "required": [
+    "startUrls"
+  ]
+}

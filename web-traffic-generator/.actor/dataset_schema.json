@@ -1,0 +1,136 @@
+{
+  "actorSpecification": 1,
+  "fields": {
+    "type": "object",
+    "properties": {
+      "visit": {
+        "type": "integer"
+      },
+      "url": {
+        "type": "string"
+      },
+      "finalUrl": {
+        "type": "string"
+      },
+      "requestLabel": {
+        "type": "string"
+      },
+      "success": {
+        "type": "boolean"
+      },
+      "statusCode": {
+        "type": [
+          "integer",
+          "null"
+        ]
+      },
+      "responseMs": {
+        "type": [
+          "integer",
+          "null"
+        ]
+      },
+      "durationMs": {
+        "type": "integer"
+      },
+      "redirects": {
+        "type": "integer"
+      },
+      "bytesRead": {
+        "type": "integer"
+      },
+      "bodyTruncated": {
+        "type": "boolean"
+      },
+      "contentType": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "startedAt": {
+        "type": "string"
+      },
+      "finishedAt": {
+        "type": "string"
+      },
+      "error": {
+        "type": [
+          "string",
+          "null"
+        ]
+      }
+    },
+    "required": [
+      "visit",
+      "url",
+      "finalUrl",
+      "requestLabel",
+      "success",
+      "statusCode",
+      "responseMs",
+      "durationMs",
+      "redirects",
+      "bytesRead",
+      "bodyTruncated",
+      "contentType",
+      "startedAt",
+      "finishedAt",
+      "error"
+    ]
+  },
+  "views": {
+    "visits": {
+      "title": "Website visits",
+      "transformation": {
+        "fields": [
+          "visit",
+          "url",
+          "requestLabel",
+          "success",
+          "statusCode",
+          "responseMs",
+          "durationMs",
+          "error"
+        ]
+      },
+      "display": {
+        "component": "table",
+        "properties": {
+          "visit": {
+            "label": "Visit",
+            "format": "number"
+          },
+          "url": {
+            "label": "Requested URL",
+            "format": "link"
+          },
+          "requestLabel": {
+            "label": "Request label",
+            "format": "text"
+          },
+          "success": {
+            "label": "Success",
+            "format": "boolean"
+          },
+          "statusCode": {
+            "label": "HTTP status",
+            "format": "number"
+          },
+          "responseMs": {
+            "label": "Response headers (ms)",
+            "format": "number"
+          },
+          "durationMs": {
+            "label": "Duration (ms)",
+            "format": "number"
+          },
+          "error": {
+            "label": "Error",
+            "format": "text"
+          }
+        }
+      }
+    }
+  }
+}
