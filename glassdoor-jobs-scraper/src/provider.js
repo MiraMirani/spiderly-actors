@@ -1,3 +1,4 @@
+import { load } from 'cheerio';
 import { origin } from './cards.js';
 
 export const providerActor = 'glasswing/glassdoor-jobs-scraper';
@@ -15,6 +16,8 @@ const booleanFilters = ['remoteOnly', 'easyApplyOnly'];
 const text = (value) => typeof value === 'string' ? value.trim() || null : null;
 const number = (value, max = Number.MAX_SAFE_INTEGER) => typeof value === 'number'
     && Number.isFinite(value) && value >= 0 && value <= max ? value : null;
+const flag = (value) => typeof value === 'boolean' ? value : null;
+const strings = (value) => Array.isArray(value) ? value.map(text).filter(Boolean) : [];
 const glassdoorUrl = (value, host, prefix) => {
     const url = URL.parse(text(value) ?? '');
     return url?.origin === host && !url.username && !url.password && url.pathname.startsWith(prefix)
@@ -46,6 +49,7 @@ function employerProfile(item) {
         diversityRating: number(item.companyDiversityRating, 5),
         seniorManagementRating: number(item.companySeniorManagementRating, 5),
         workLifeBalanceRating: number(item.companyWorkLifeBalanceRating, 5),
+        statsDate: text(item.companyStatsDate),
     };
     return Object.values(profile).some((value) => value !== null) ? profile : null;
 }
@@ -55,7 +59,7 @@ export function providerInput(input, mode, urls, maxItems) {
     if (typeof includeDescription !== 'boolean' || typeof includeEmployerStats !== 'boolean') {
         throw new Error('Description and employer profile options must be true or false.');
     }
-    const base = { maxItems, includeDescription, includeEmployerStats };
+    const base = { maxItems, includeDescription, includeDescriptionHtml: includeDescription, includeEmployerStats };
     if (mode === 'url') return { ...base, keywords: [], startUrls: urls };
 
     const { keyword = defaultKeyword, location = defaultLocation, titleMatch = 'any', minSalary } = input;
@@ -102,26 +106,52 @@ export function providerRows(items, urls, phrase, maxItems) {
             company: text(item.company),
             companyRating: companyRating > 0 ? companyRating : null,
             location: text(item.location),
+            locationId: number(item.locationId),
+            locationType: text(item.locationType),
             easyApplyBadge: item.easyApply === true,
+            sponsored: flag(item.sponsored),
             salaryRaw: null,
             salaryMin: number(item.salaryMin),
             salaryMedian: number(item.salaryMedian),
             salaryMax: number(item.salaryMax),
             salaryCurrency: text(item.salaryCurrency),
             salaryPeriod: text(item.salaryPeriod),
+            salaryIsEstimate: flag(item.salaryIsEstimate),
             salarySource: item.salaryIsEstimate === true ? 'glassdoor_estimate'
                 : item.salaryIsEstimate === false && (item.salaryMin != null || item.salaryMax != null) ? 'employer' : null,
             snippet: text(item.snippet),
             description: text(item.description),
+            descriptionHtml: descriptionHtml(item.descriptionHtml),
+            descriptionError: text(item.descriptionError),
             postedDaysAgo: number(item.postedDaysAgo),
-            jobTypes: Array.isArray(item.jobTypes) ? item.jobTypes.map(text).filter(Boolean) : [],
-            skills: Array.isArray(item.skills) ? item.skills.map(text).filter(Boolean) : [],
-            remote: typeof item.remote === 'boolean' ? item.remote : null,
+            jobTypes: strings(item.jobTypes),
+            skills: strings(item.skills),
+            tags: strings(item.tags),
+            remote: flag(item.remote),
             workplaceType: text(item.workplaceType),
             occupation: text(item.occupation),
             companyProfile: employerProfile(item),
+            companyStatsError: text(item.companyStatsError),
+            scrapedAt: text(item.scrapedAt),
         });
         if (rows.size >= maxItems) break;
     }
     return [...rows.values()];
+}
+
+const descriptionTags = new Set(['p', 'div', 'span', 'br', 'ul', 'ol', 'li', 'strong', 'b', 'em', 'i',
+    'u', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'blockquote', 'hr']);
+
+function descriptionHtml(value) {
+    if (!text(value)) return null;
+    const $ = load(value, {}, false);
+    $('script, style, iframe, object, embed, template, svg, math').remove();
+    $('*').each((_, element) => {
+        if (!descriptionTags.has(element.name)) {
+            $(element).replaceWith($(element).contents());
+            return;
+        }
+        for (const name of Object.keys(element.attribs)) $(element).removeAttr(name);
+    });
+    return $.root().text().trim() ? $.html() : null;
 }

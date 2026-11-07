@@ -13,6 +13,7 @@ test('passes only supported keyword search parameters to the provider', () => {
     assert.equal(input.datePosted, '7');
     assert.equal(input.remoteOnly, true);
     assert.equal(input.includeDescription, true);
+    assert.equal(input.includeDescriptionHtml, true);
     assert.equal(input.includeEmployerStats, true);
     assert.equal(Object.hasOwn(input, 'savedHtml'), false);
     assert.throws(() => providerInput({ jobType: 'invalid' }, 'keyword', [], 5));
@@ -24,6 +25,8 @@ test('maps valid listings and filters titles without accepting third-party links
         title: 'Senior Software Engineer', status: 'ok', salaryMin: 100000,
         salaryMedian: 125000, salaryIsEstimate: false, easyApply: true,
         description: 'Full description', companyCultureRating: 4.2,
+        descriptionHtml: '<p onclick="alert(1)">Full <b>description</b><script>alert(1)</script></p>',
+        locationId: 1132348, sponsored: false, tags: ['Health insurance'],
     };
     const rows = providerRows([
         { ...job, url: 'https://example.org/job-listing/example.htm' },
@@ -35,6 +38,10 @@ test('maps valid listings and filters titles without accepting third-party links
     assert.equal(rows[0].salarySource, 'employer');
     assert.equal(rows[0].salaryMedian, 125000);
     assert.equal(rows[0].description, 'Full description');
+    assert.equal(rows[0].descriptionHtml, '<p>Full <b>description</b></p>');
+    assert.equal(rows[0].locationId, 1132348);
+    assert.equal(rows[0].sponsored, false);
+    assert.deepEqual(rows[0].tags, ['Health insurance']);
     assert.equal(rows[0].companyProfile.cultureRating, 4.2);
     assert.equal(rows[0].easyApplyBadge, true);
     assert.equal(rows[0].sourceUrl, null);

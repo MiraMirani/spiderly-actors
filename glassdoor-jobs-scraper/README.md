@@ -24,7 +24,7 @@ Keyword and URL modes run an upstream Apify Actor with a separate charge cap. Th
 
 ## Job and employer details
 
-Live searches include median pay, posting age, job types, skills, and work arrangement when the source supplies them. Turn on **Include full job descriptions** to fetch the full text, and **Include employer profiles** to fetch company size, industry, headquarters, and rating breakdowns. The upstream run can charge extra for full descriptions. Missing details remain empty. Saved-page imports continue to use the fields visible on each card.
+Live searches include median pay, posting age, job types, skills, and work arrangement when the source supplies them. Turn on **Include full job descriptions** to fetch the full text and formatted HTML, and **Include employer profiles** to fetch company size, industry, headquarters, and rating breakdowns. The upstream run can charge extra for full descriptions. Use the **Jobs**, **Job details**, **Companies**, and **Salaries** output views to browse the data. The full dataset also includes location IDs, sponsored flags, listing tags, and collection timestamps when supplied. Missing details remain empty. Existing API calls can set both detail options explicitly. Saved-page imports continue to use the fields visible on each card.
 
 ## Search by URL
 

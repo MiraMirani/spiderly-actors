@@ -190,15 +190,17 @@
     "includeDescription": {
       "title": "Include full job descriptions",
       "type": "boolean",
-      "description": "Fetch full descriptions when available. Upstream per-description charges may apply. Keyword and URL modes only.",
+      "description": "Fetch plain text and HTML descriptions when available. Upstream per-description charges may apply. Keyword and URL modes only.",
       "default": false,
-      "sectionCaption": "Job and employer details"
+      "sectionCaption": "Job and employer details",
+      "prefill": true
     },
     "includeEmployerStats": {
       "title": "Include employer profiles",
       "type": "boolean",
       "description": "Fetch company profile data and rating breakdowns when available. Keyword and URL modes only.",
-      "default": false
+      "default": false,
+      "prefill": true
     },
     "searchUrls": {
       "title": "Glassdoor search URLs",

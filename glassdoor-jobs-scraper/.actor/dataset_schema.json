@@ -266,7 +266,67 @@
               "string",
               "null"
             ]
+          },
+          "statsDate": {
+            "type": [
+              "string",
+              "null"
+            ]
           }
+        }
+      },
+      "locationId": {
+        "type": [
+          "number",
+          "null"
+        ]
+      },
+      "locationType": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "sponsored": {
+        "type": [
+          "boolean",
+          "null"
+        ]
+      },
+      "salaryIsEstimate": {
+        "type": [
+          "boolean",
+          "null"
+        ]
+      },
+      "descriptionHtml": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "descriptionError": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "companyStatsError": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "scrapedAt": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "tags": {
+        "type": "array",
+        "items": {
+          "type": "string"
         }
       }
     }
@@ -279,8 +339,13 @@
           "title",
           "company",
           "location",
+          "salaryMin",
+          "salaryMax",
+          "salaryCurrency",
+          "salaryPeriod",
           "salaryRaw",
           "companyRating",
+          "postedDaysAgo",
           "jobUrl"
         ]
       },
@@ -310,7 +375,13 @@
           "salaryCurrency",
           "salaryPeriod",
           "description",
-          "jobUrl"
+          "jobUrl",
+          "skills",
+          "tags",
+          "sponsored",
+          "locationType",
+          "locationId",
+          "scrapedAt"
         ]
       },
       "display": {
@@ -321,6 +392,66 @@
             "format": "link"
           }
         }
+      }
+    },
+    "companies": {
+      "title": "Companies",
+      "transformation": {
+        "fields": [
+          "company",
+          "companyRating",
+          "companyProfile.url",
+          "companyProfile.logoUrl",
+          "companyProfile.size",
+          "companyProfile.industry",
+          "companyProfile.sector",
+          "companyProfile.headquarters",
+          "companyProfile.revenue",
+          "companyProfile.ownershipType",
+          "companyProfile.id",
+          "companyProfile.reviewCount",
+          "companyProfile.ratingCount",
+          "companyProfile.ceoApprovalPercent",
+          "companyProfile.recommendPercent",
+          "companyProfile.businessOutlookPercent",
+          "companyProfile.careerOpportunitiesRating",
+          "companyProfile.compensationRating",
+          "companyProfile.cultureRating",
+          "companyProfile.diversityRating",
+          "companyProfile.seniorManagementRating",
+          "companyProfile.workLifeBalanceRating",
+          "companyProfile.foundedYear",
+          "companyProfile.website",
+          "companyProfile.statsDate",
+          "companyStatsError",
+          "jobUrl"
+        ]
+      },
+      "display": {
+        "component": "table",
+        "properties": {}
+      }
+    },
+    "salaries": {
+      "title": "Salaries",
+      "transformation": {
+        "fields": [
+          "title",
+          "company",
+          "location",
+          "salaryMin",
+          "salaryMedian",
+          "salaryMax",
+          "salaryCurrency",
+          "salaryPeriod",
+          "salaryIsEstimate",
+          "salarySource",
+          "jobUrl"
+        ]
+      },
+      "display": {
+        "component": "table",
+        "properties": {}
       }
     }
   }
