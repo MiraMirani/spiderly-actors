@@ -148,7 +148,7 @@ export function adaptFastRows(items, options) {
     }));
 }
 
-export function providerRows(items, urls, phrase, maxItems) {
+export function providerRows(items, urls, phrase, maxItems, { hosted = false } = {}) {
     const rows = new Map();
     const match = phrase?.toLowerCase();
     for (const item of items) {
@@ -165,7 +165,11 @@ export function providerRows(items, urls, phrase, maxItems) {
         jobUrl.searchParams.set('jl', jobId);
         jobUrl.hash = '';
         const companyRating = number(item.companyRating, 5);
+        const externalApply = hosted ? URL.parse(text(item.externalApplyUrl) ?? '') : null;
         rows.set(jobId, {
+            ...(hosted && {
+                companyLogoUrl: glassdoorUrl(item.logoUrl, 'https://media.glassdoor.com', '/sql/'),
+            }),
             jobId, title, jobUrl: jobUrl.href, sourceUrl,
             company: text(item.company),
             companyRating: companyRating > 0 ? companyRating : null,
@@ -203,7 +207,9 @@ export function providerRows(items, urls, phrase, maxItems) {
             country: text(item.country),
             latitude: typeof item.latitude === 'number' && Math.abs(item.latitude) <= 90 ? item.latitude : null,
             longitude: typeof item.longitude === 'number' && Math.abs(item.longitude) <= 180 ? item.longitude : null,
-            applyUrl: glassdoorUrl(item.applyUrl, origin, '/partner/jobListing.htm'),
+            applyUrl: externalApply?.protocol === 'https:' && !externalApply.username && !externalApply.password
+                && !/(^|[.])glassdoor[.]/i.test(externalApply.hostname)
+                ? externalApply.href : glassdoorUrl(item.applyUrl, origin, '/partner/jobListing.htm'),
             seniority: text(item.seniority),
             benefits: strings(item.benefits),
             expired: flag(item.isExpired),

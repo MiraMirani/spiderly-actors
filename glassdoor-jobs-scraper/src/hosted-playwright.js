@@ -29,10 +29,57 @@ const pageFunction = String.raw`async ({page,request,log}) => {
   return {rows:[...jobs.values()],pages};
  }, request.userData);
  log.info('BATCH_DIAGNOSTIC '+JSON.stringify({jobs:result.rows.length,pages:result.pages}));
- return result.rows.map(row => ({ ...row, status: 'ok', url: row.jobUrl, searchUrl: request.url, salaryMin: row.salary?.p10, salaryMedian: row.salary?.p50, salaryMax: row.salary?.p90 }));
+ const rows = result.rows.map(row => ({
+    ...row, status: 'ok', url: row.jobUrl, searchUrl: request.url,
+    salaryMin: row.salary?.p10, salaryMedian: row.salary?.p50, salaryMax: row.salary?.p90,
+    postedDaysAgo: row.ageInDays,
+    snippet: row.snippet.join(' ').trim() || null,
+ }));
+ if (!request.userData.includeDescription) return rows;
+ for (let index = 0; index < rows.length; index += 4) {
+    await Promise.all(rows.slice(index, index + 4).map(async (row) => {
+        try {
+            const details = await page.evaluate(async (jobUrl) => {
+                const url = new URL(jobUrl);
+                if (url.origin !== location.origin || !url.pathname.startsWith('/job-listing/')) return {};
+                const response = await fetch(url, { redirect: 'error', signal: AbortSignal.timeout(7000) });
+                if (!response.ok) return { descriptionError: 'Detail page HTTP ' + response.status };
+                const document = new DOMParser().parseFromString(await response.text(), 'text/html');
+                const description = document.querySelector('[data-test="jobDescription"], [class*="JobDetails_jobDescription"]');
+                let descriptionHtml = description?.innerHTML;
+                for (const script of document.querySelectorAll('script[type="application/ld+json"]')) {
+                    try {
+                        const data = JSON.parse(script.textContent);
+                        const entries = Array.isArray(data) ? data : (data['@graph'] ?? [data]);
+                        const posting = entries.find(entry => entry?.['@type'] === 'JobPosting');
+                        if (typeof posting?.description === 'string') {
+                            descriptionHtml = posting.description;
+                            break;
+                        }
+                    } catch {}
+                }
+                const plain = descriptionHtml
+                    ? new DOMParser().parseFromString(descriptionHtml, 'text/html').body.textContent.trim() : null;
+                const apply = document.querySelector('a[data-test="applyButton"][href], a[data-test="apply-button"][href]');
+                const applyUrl = apply ? new URL(apply.getAttribute('href'), url) : null;
+                const external = applyUrl?.protocol === 'https:' && !applyUrl.username && !applyUrl.password
+                    && !/(^|[.])glassdoor[.]/i.test(applyUrl.hostname);
+                return {
+                    description: plain || null, descriptionHtml: descriptionHtml || null,
+                    externalApplyUrl: external ? applyUrl.href : null,
+                    descriptionError: plain ? null : 'Full description unavailable on the detail page.',
+                };
+            }, row.jobUrl);
+            Object.assign(row, details);
+        } catch {
+            row.descriptionError = 'Could not load the detail page.';
+        }
+    }));
+ }
+ return rows;
 }`;
 
-export function hostedPlaywrightInput(urls, keyword, maxItems, maxPages) {
+export function hostedPlaywrightInput(urls, keyword, maxItems, maxPages, includeDescription = false) {
     if (typeof keyword !== 'string' || !keyword.trim() || keyword.length > 200) {
         throw new Error('Enter the keyword used in the city search URL.');
     }
@@ -43,7 +90,7 @@ export function hostedPlaywrightInput(urls, keyword, maxItems, maxPages) {
         const parsed = new URL(url);
         const match = decodeURIComponent(parsed.pathname).match(/\/Job\/(.+)-SRCH_([^/]*_IC(\d+)[^/]*)\.htm$/i);
         if (!match || parsed.search) throw new Error('Enter an unfiltered Glassdoor city search URL.');
-        return { url, userData: { keyword: keyword.trim(), city: { id: Number(match[3]), parameters: match[2], slug: match[1].toLowerCase() }, maxItems, maxPages } };
+        return { url, userData: { keyword: keyword.trim(), city: { id: Number(match[3]), parameters: match[2], slug: match[1].toLowerCase() }, maxItems, maxPages, includeDescription } };
     });
     return {
         ...{
@@ -69,6 +116,6 @@ export function hostedPlaywrightInput(urls, keyword, maxItems, maxPages) {
             "downloadMedia": false,
             "downloadCss": true
         },
-        startUrls, pageFunction, maxPagesPerCrawl: startUrls.length, maxResultsPerCrawl: maxItems,
+        startUrls, pageFunction, pageFunctionTimeoutSecs: includeDescription ? 240 : 60, maxPagesPerCrawl: startUrls.length, maxResultsPerCrawl: maxItems,
     };
 }

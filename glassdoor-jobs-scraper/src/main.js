@@ -103,14 +103,14 @@ try {
     } else {
         const hosted = mode === 'hosted_playwright';
         const upstreamInput = hosted
-            ? hostedPlaywrightInput(urls, input.keyword ?? 'software engineer', maxItems, maxPages)
+            ? hostedPlaywrightInput(urls, input.keyword ?? 'software engineer', maxItems, maxPages, input.includeDescription === true)
             : providerInput(input, mode, urls, maxItems);
         if (!Actor.isAtHome()) throw new Error('Run keyword and URL searches on Apify. Saved HTML is supported locally.');
         const { providerBudgetUsd = 0.30 } = input;
         if (!Number.isFinite(providerBudgetUsd) || providerBudgetUsd < 0.01 || providerBudgetUsd > 1) {
             throw new Error('Set the upstream budget between $0.01 and $1.');
         }
-        const options = providerRunOptions(upstreamInput, providerBudgetUsd, Actor.getEnv().timeoutAt);
+        const options = providerRunOptions(hosted ? { includeDescription: input.includeDescription } : upstreamInput, providerBudgetUsd, Actor.getEnv().timeoutAt);
         const source = hosted ? { actor: hostedPlaywrightActor, input: upstreamInput } : liveProvider(input, mode, upstreamInput);
         if (hosted) options.memory = 1024;
         summary.providerActor = source.actor;
@@ -129,7 +129,7 @@ try {
         const { items } = await Actor.apifyClient.dataset(run.defaultDatasetId).listItems({ limit: maxItems + 10 });
         const phrase = mode === 'keyword' && input.titleMatch === 'phrase' ? upstreamInput.keywords[0] : null;
         const normalized = source.actor === fastProviderActor ? adaptFastRows(items, upstreamInput) : items;
-        const rows = providerRows(normalized, urls, phrase, maxItems);
+        const rows = providerRows(normalized, urls, phrase, maxItems, { hosted });
         if (rows.length) await Actor.pushData(rows);
         summary.jobs = rows.length;
         summary.upstreamRows = items.length;

@@ -395,6 +395,11 @@
           "type": "string"
         }
       }
+    },
+    "companyLogoUrl": {
+      "type": "string",
+      "title": "Company logo URL",
+      "description": "URL of the company logo when available."
     }
   },
   "views": {

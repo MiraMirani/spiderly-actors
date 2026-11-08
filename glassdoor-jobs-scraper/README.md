@@ -132,3 +132,5 @@ Choose **Apify Playwright search by city URL** to run the search through Apify's
 ```
 
 The upstream run uses Chrome and a US residential proxy. Its compute and proxy usage are billed separately from this Actor. The run summary records the upstream run ID. This mode collects search listings and available salary data.
+
+Hosted Playwright search includes company logos, description snippets, and posting age when Glassdoor provides them. Set `includeDescription` to `true` to look up full descriptions and direct external application links on the detail pages. Detail lookups use additional compute and proxy traffic. Fields remain empty when the detail page does not expose them.
