@@ -149,7 +149,7 @@ async function collectLive(urls, maxItems, maxPages, proxyConfiguration, keyword
         server: `${protocol}//${host}`, username: decodeURIComponent(username), password: decodeURIComponent(password),
     }))(new URL(proxyUrl)) : undefined;
     browser = await chromium.launch({
-        proxy, channel: 'chrome', headless: false,
+        proxy, channel: 'chrome', headless: true,
     });
     const context = await browser.newContext({ locale: 'en-US' });
     await context.route('**/*', (route) => ['image', 'font', 'media'].includes(route.request().resourceType())

@@ -8,4 +8,4 @@ COPY package*.json ./
 RUN npm ci --omit=dev
 RUN npx playwright install chrome
 COPY . ./
-CMD ["xvfb-run", "-a", "node", "src/main.js"]
+CMD ["node", "src/main.js"]
