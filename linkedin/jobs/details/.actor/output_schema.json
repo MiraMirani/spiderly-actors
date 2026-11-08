@@ -1,0 +1,10 @@
+{
+  "actorOutputSchemaVersion": 1,
+  "title": "LinkedIn job collection",
+  "properties": {
+    "jobs": { "type": "string", "title": "Jobs", "description": "One row per unique job. Missing public fields are null; detailsStatus and companyProfileStatus describe enrichment availability.", "template": "{{links.apiDefaultDatasetUrl}}/items?clean=true" },
+    "searchTotals": { "type": "string", "title": "Search totals", "description": "LinkedIn's displayed match counts where available, with a lower-bound marker for counts such as 1,000+.", "template": "{{links.apiDefaultKeyValueStoreUrl}}/records/SEARCH_TOTALS" },
+    "summary": { "type": "string", "title": "Run summary", "description": "Item count and completion status.", "template": "{{links.apiDefaultKeyValueStoreUrl}}/records/RUN_SUMMARY" },
+    "failedRequests": { "type": "string", "title": "Failed requests", "description": "Search, detail or company requests that could not be completed.", "template": "{{links.apiDefaultKeyValueStoreUrl}}/records/FAILED_REQUESTS" }
+  }
+}

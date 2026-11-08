@@ -1,0 +1,34 @@
+name: Actor checks
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  images:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node scripts/actor-images.mjs --check
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        actor: [finn/jobs/details, finn/jobs/fast, linkedin/jobs, linkedin/jobs/details, nav/jobs, jobbnorge/jobs]
+    defaults:
+      run:
+        working-directory: ${{ matrix.actor }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+        if: matrix.actor == 'linkedin/jobs/details'
+      - run: npm install --ignore-scripts --no-audit --no-fund
+        if: matrix.actor == 'finn/jobs/details'
+      - run: npm test

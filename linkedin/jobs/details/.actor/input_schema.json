@@ -1,0 +1,30 @@
+{
+  "title": "LinkedIn Jobs — Detailed Search",
+  "type": "object",
+  "schemaVersion": 1,
+  "properties": {
+    "titles": { "title": "Job titles or keywords", "type": "array", "editor": "stringList", "description": "Each term is searched in each location.", "prefill": ["software engineer"] },
+    "locations": { "title": "Locations", "type": "array", "editor": "stringList", "description": "Cities, regions or countries. An empty list searches without a location filter.", "prefill": ["Oslo"] },
+    "rows": { "title": "Jobs per search", "type": "integer", "description": "Limit unique delivered jobs for each title/location pair. Zero continues until the page limit, global limit or end of results.", "default": 0, "minimum": 0, "maximum": 1000 },
+    "maxItems": { "title": "Maximum jobs for the whole run", "type": "integer", "description": "A shared limit across every search and pasted URL. Defaults to 100 to bound a first run.", "default": 100, "minimum": 1, "maximum": 100000 },
+    "publishedAt": { "title": "Date posted", "description": "Restrict jobs by the time they were published.", "type": "string", "editor": "select", "default": "", "enum": ["", "r86400", "r604800", "r2592000"], "enumTitles": ["Any time", "Past 24 hours", "Past week", "Past month"] },
+    "workTypes": { "title": "Workplace types", "description": "Include any selected workplace arrangement.", "type": "array", "editor": "select", "items": { "type": "string", "enum": ["1", "2", "3"], "enumTitles": ["On-site", "Remote", "Hybrid"] } },
+    "contractTypes": { "title": "Employment types", "description": "Include any selected employment type.", "type": "array", "editor": "select", "items": { "type": "string", "enum": ["F", "P", "C", "T", "I", "V", "O"], "enumTitles": ["Full-time", "Part-time", "Contract", "Temporary", "Internship", "Volunteer", "Other"] } },
+    "experienceLevels": { "title": "Experience levels", "description": "Include any selected seniority level.", "type": "array", "editor": "select", "items": { "type": "string", "enum": ["1", "2", "3", "4", "5", "6"], "enumTitles": ["Internship", "Entry level", "Associate", "Mid-Senior level", "Director", "Executive"] } },
+    "industry": { "title": "Industry codes", "type": "array", "editor": "stringList", "description": "Numeric LinkedIn industry codes, passed as f_I. You can also paste a LinkedIn search URL with its industry filters." },
+    "companyId": { "title": "Company IDs", "type": "array", "editor": "stringList", "description": "Numeric LinkedIn company IDs; the filter is sent to LinkedIn." },
+    "companyUrls": { "title": "Company URLs to filter a search", "type": "array", "editor": "stringList", "description": "Public company pages resolved to company IDs. Resolution failures stop the run instead of silently removing the company filter." },
+    "companyName": { "title": "Company names to keep", "type": "array", "editor": "stringList", "description": "Exact, case-insensitive company names checked on returned listings. Use IDs for filtering on LinkedIn's side." },
+    "easyApply": { "title": "Easy Apply filter", "type": "boolean", "description": "Send LinkedIn's Easy Apply search filter.", "default": false },
+    "under10Applicants": { "title": "Under 10 applicants filter", "type": "boolean", "description": "Send LinkedIn's fewer-than-ten-applicants search filter.", "default": false },
+    "sortBy": { "title": "Sort order", "description": "Request relevant jobs or the most recently posted jobs first.", "type": "string", "editor": "select", "default": "relevance", "enum": ["relevance", "recent"], "enumTitles": ["Relevance", "Most recent"] },
+    "startUrls": { "title": "Or paste LinkedIn URLs", "type": "array", "editor": "requestListSources", "description": "Search URLs, individual job URLs or company page URLs. When present, these define the searches and structured filters are ignored." },
+    "maxRowsPerUrl": { "title": "Jobs per pasted URL", "type": "integer", "description": "Per-URL result limit. Zero uses the public search ceiling of 1,000; maxItems still caps the whole run.", "default": 0, "minimum": 0, "maximum": 1000 },
+    "companyProfile": { "title": "Add public company profiles", "type": "boolean", "description": "Fetch each company page once per process to add website, industry, size and other published profile information. Blocked profiles are marked failed.", "default": true },
+    "enrichCompany": { "title": "Add public recruiter and job signals", "type": "boolean", "description": "Include recruiter headline/photo and structured job signals when present in the public response. Unavailable values remain null.", "default": false },
+    "maxPages": { "title": "Maximum pages per search", "type": "integer", "description": "Stop each search after this many listing pages.", "default": 100, "minimum": 1, "maximum": 100 },
+    "requestDelayMillis": { "title": "Delay between requests (milliseconds)", "type": "integer", "description": "A shared minimum interval for requests. Increase it if LinkedIn rate-limits your connection.", "default": 1000, "minimum": 0, "maximum": 60000 },
+    "maxRetries": { "title": "Retries per request", "type": "integer", "description": "Bounded retries with increasing wait times. Missing or removed pages are not retried.", "default": 3, "minimum": 0, "maximum": 6 },
+    "proxyConfiguration": { "title": "Proxy configuration", "type": "object", "editor": "proxy", "description": "Optional locally; enable Apify Proxy for cloud runs. Residential proxies can help with rate limits and company pages.", "default": { "useApifyProxy": true }, "prefill": { "useApifyProxy": true, "apifyProxyGroups": ["RESIDENTIAL"] } }
+  }
+}

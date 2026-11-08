@@ -1,0 +1,26 @@
+{
+  "actorSpecification": 1,
+  "views": {
+    "jobs": {
+      "title": "Detailed jobs",
+      "transformation": { "fields": ["title", "companyName", "location", "publishedAt", "contractType", "experienceLevel", "salaryMin", "salaryMax", "salaryCurrency", "applicationsCount", "detailsStatus", "jobUrl"] },
+      "display": {
+        "component": "table",
+        "properties": {
+          "title": { "label": "Job title" },
+          "companyName": { "label": "Company" },
+          "location": { "label": "Location" },
+          "publishedAt": { "label": "Posted" },
+          "contractType": { "label": "Employment" },
+          "experienceLevel": { "label": "Seniority" },
+          "salaryMin": { "label": "Salary from" },
+          "salaryMax": { "label": "Salary to" },
+          "salaryCurrency": { "label": "Currency" },
+          "applicationsCount": { "label": "Applicants" },
+          "detailsStatus": { "label": "Details" },
+          "jobUrl": { "label": "Job link", "format": "link" }
+        }
+      }
+    }
+  }
+}
