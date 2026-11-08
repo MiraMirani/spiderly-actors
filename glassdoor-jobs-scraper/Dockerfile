@@ -6,5 +6,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends python3-venv &&
 ENV PATH="/opt/glassdoor-python/bin:${PATH}"
 COPY package*.json ./
 RUN npm ci --omit=dev
+RUN npx playwright install chrome
 COPY . ./
-CMD ["node", "src/main.js"]
+CMD ["xvfb-run", "-a", "node", "src/main.js"]

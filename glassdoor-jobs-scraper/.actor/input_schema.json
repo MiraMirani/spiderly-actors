@@ -13,13 +13,15 @@
         "keyword",
         "url",
         "saved_html",
-        "browserless"
+        "browserless",
+        "direct"
       ],
       "enumTitles": [
         "Keyword and location",
         "Glassdoor search URL",
         "Saved browser page",
-        "Browserless search by city URL"
+        "Browserless search by city URL",
+        "Playwright search by URL"
       ],
       "prefill": "keyword",
       "sectionCaption": "Search method"

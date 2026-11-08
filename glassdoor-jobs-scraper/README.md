@@ -65,7 +65,22 @@ Keyword searches use the fast source by default. It can provide posting dates, g
 
 Choose **Glassdoor search URL** and paste up to five supported US results page URLs. URL searches use the filters in those URLs. If a URL is rejected, enter the role and location in keyword mode or import the saved page.
 
-Existing API inputs containing only `searchUrls` retain the original direct browser behavior. Glassdoor can deny those requests with HTTP 403.
+Choose **Playwright search by URL** to run Chrome inside this Actor. On Apify, use a US residential proxy and keep the same session across pages. Unfiltered city URLs with a matching keyword use Glassdoor’s JSON search results. Other URLs use the visible job cards. The output covers listing summaries and available salary data.
+
+```json
+{
+  "mode": "direct",
+  "maxItems": 20,
+  "maxPages": 1,
+  "proxyConfiguration": {
+    "useApifyProxy": true,
+    "apifyProxyGroups": ["RESIDENTIAL"],
+    "apifyProxyCountry": "US"
+  }
+}
+```
+
+This example searches for software engineer jobs in New York. Supply `searchUrls` and the matching `keyword` to choose another city search.
 
 ## Import results from your browser
 

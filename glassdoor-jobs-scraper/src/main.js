@@ -4,7 +4,7 @@ import { promisify } from 'node:util';
 import { fileURLToPath } from 'node:url';
 import { Actor, log } from 'apify';
 import { chromium } from 'playwright';
-import { cardSelector, origin, parseCards, sampleSearch, searchUrl } from './cards.js';
+import { cardSelector, parseCards, sampleSearch, searchUrl } from './cards.js';
 import { adaptFastRows, fastProviderActor, liveProvider, providerInput, providerRows, providerRunOptions } from './provider.js';
 
 const summary = { jobs: 0, searches: [] };
@@ -22,7 +22,7 @@ try {
     const input = await Actor.getInput() ?? {};
     const {
         searchUrls, maxItems = 20, maxPages = 1, savedHtml,
-        proxyConfiguration = { useApifyProxy: true, apifyProxyGroups: ['RESIDENTIAL'] },
+        proxyConfiguration = { useApifyProxy: true, apifyProxyGroups: ['RESIDENTIAL'], apifyProxyCountry: 'US' },
     } = input;
     if (!Number.isInteger(maxItems) || maxItems < 1 || maxItems > 100) {
         throw new Error('Set the result limit to a whole number between 1 and 100.');
@@ -98,7 +98,7 @@ try {
         if (!Number.isInteger(maxPages) || maxPages < 1 || maxPages > 5) {
             throw new Error('Set the direct search batch limit to a whole number between 1 and 5.');
         }
-        await collectLive(urls, maxItems, maxPages, proxyConfiguration);
+        await collectLive(urls, maxItems, maxPages, proxyConfiguration, input.keyword);
     } else {
         const upstreamInput = providerInput(input, mode, urls, maxItems);
         if (!Actor.isAtHome()) throw new Error('Run keyword and URL searches on Apify. Saved HTML is supported locally.');
@@ -140,23 +140,20 @@ try {
 if (summary.error) await Actor.fail(summary.error);
 else await Actor.exit();
 
-async function collectLive(urls, maxItems, maxPages, proxyConfiguration) {
+async function collectLive(urls, maxItems, maxPages, proxyConfiguration, keyword) {
     const seen = new Set();
     // Glassdoor blocks datacenter IPs (HTTP 403), so browse through a residential proxy.
     const proxyUrl = proxyConfiguration?.useApifyProxy || proxyConfiguration?.proxyUrls?.length
-        ? await (await Actor.createProxyConfiguration(proxyConfiguration)).newUrl() : undefined;
+        ? await (await Actor.createProxyConfiguration(proxyConfiguration)).newUrl(randomUUID().replaceAll('-', '')) : undefined;
     const proxy = proxyUrl ? (({ protocol, host, username, password }) => ({
         server: `${protocol}//${host}`, username: decodeURIComponent(username), password: decodeURIComponent(password),
     }))(new URL(proxyUrl)) : undefined;
-    browser = await chromium.launch({ proxy });
-    const context = await browser.newContext({ serviceWorkers: 'block', locale: 'en-US' });
-    await context.route('**/*', (route) => {
-        const request = route.request();
-        return new URL(request.url()).origin === origin
-            && !['image', 'font', 'media'].includes(request.resourceType())
-            ? route.continue() : route.abort();
+    browser = await chromium.launch({
+        proxy, channel: 'chrome', headless: false,
     });
-    await context.routeWebSocket('**/*', (socket) => socket.close());
+    const context = await browser.newContext({ locale: 'en-US' });
+    await context.route('**/*', (route) => ['image', 'font', 'media'].includes(route.request().resourceType())
+        ? route.abort() : route.continue());
     const page = await context.newPage();
     for (const url of urls) {
         if (summary.jobs >= maxItems) break;
@@ -171,11 +168,23 @@ async function collectLive(urls, maxItems, maxPages, proxyConfiguration) {
             }
             const cards = page.locator(cardSelector);
             await cards.first().waitFor({ timeout: 12000 });
+            const parsedUrl = new URL(url);
+            const city = !parsedUrl.search && decodeURIComponent(parsedUrl.pathname).match(/\/Job\/(.+)-SRCH_([^/]*_IC(\d+)[^/]*)\.htm$/i);
+            const searchKeyword = url === sampleSearch ? (keyword || 'software engineer') : keyword;
+            let cursor = '';
             for (let pageIndex = 0; pageIndex < maxPages; pageIndex += 1) {
-                const html = await cards.evaluateAll((elements) => elements
-                    .filter((element) => element.getClientRects().length > 0)
-                    .map((element) => element.outerHTML).join(''));
-                const rows = parseCards(html, url).filter((job) => !seen.has(job.jobId))
+                let batch;
+                if (city && searchKeyword) {
+                    const result = await searchJson(page, url, city, searchKeyword, cursor, pageIndex + 1);
+                    batch = result.rows;
+                    cursor = result.cursor;
+                } else {
+                    const html = await cards.evaluateAll((elements) => elements
+                        .filter((element) => element.getClientRects().length > 0)
+                        .map((element) => element.outerHTML).join(''));
+                    batch = parseCards(html, url);
+                }
+                const rows = batch.filter((job) => !seen.has(job.jobId))
                     .slice(0, maxItems - summary.jobs);
                 if (rows.length) {
                     await Actor.pushData(rows);
@@ -184,6 +193,10 @@ async function collectLive(urls, maxItems, maxPages, proxyConfiguration) {
                     summary.jobs += rows.length;
                 }
                 search.pages += 1;
+                if (city && searchKeyword) {
+                    if (!cursor || summary.jobs >= maxItems) break;
+                    continue;
+                }
                 const more = page.getByRole('button', { name: 'Show more jobs' });
                 if (summary.jobs >= maxItems || pageIndex + 1 >= maxPages || !await more.isVisible()) break;
                 const previousCount = await cards.count();
@@ -198,4 +211,39 @@ async function collectLive(urls, maxItems, maxPages, proxyConfiguration) {
     }
     if (!summary.jobs) throw new Error('No public Glassdoor job cards were collected. See SUMMARY for the search status.');
     log.info('Collected Glassdoor jobs', { jobs: summary.jobs });
+}
+
+async function searchJson(page, url, city, keyword, cursor, pageNumber) {
+    const payload = {
+        excludeJobListingIds: [], filterParams: [], includeIndeedJobAttributes: true,
+        keyword, locationId: Number(city[3]), locationType: 'CITY', numJobsToShow: 30,
+        originalPageUrl: url, pageCursor: cursor, pageNumber, pageType: 'SERP',
+        parameterUrlInput: city[2], seoFriendlyUrlInput: city[1].toLowerCase(), seoUrl: true,
+    };
+    const search = await page.evaluate(async (input) => {
+        const response = await fetch('/job-search-next/bff/jobSearchResultsQuery', {
+            method: 'POST', headers: { 'content-type': 'application/json', accept: 'application/json' },
+            body: JSON.stringify(input), signal: AbortSignal.timeout(12000),
+        });
+        if (!response.ok) throw new Error('Glassdoor search returned HTTP ' + response.status);
+        return (await response.json()).data?.jobListings;
+    }, payload);
+    if (!Array.isArray(search?.jobListings)) throw new Error('Glassdoor search response is missing listings.');
+    const rows = [];
+    for (const { jobview } of search.jobListings) {
+        const { job, header = {} } = jobview ?? {};
+        if (!job?.listingId || !job.jobTitleText) continue;
+        rows.push({
+            jobId: String(job.listingId), title: job.jobTitleText,
+            company: header.employer?.name ?? header.employerNameFromSearch ?? null,
+            companyRating: header.employer?.ratings?.overallRating ?? null,
+            location: header.locationName ?? null, jobUrl: header.seoJobLink ?? null,
+            easyApplyBadge: header.easyApply ?? null,
+            salaryMin: header.payPeriodAdjustedPay?.p10 ?? null,
+            salaryMax: header.payPeriodAdjustedPay?.p90 ?? null,
+            salaryCurrency: header.payCurrency ?? null, salaryPeriod: header.payPeriod?.toLowerCase() ?? null,
+            snippet: job.descriptionFragmentsText?.join(' ') ?? null, sourceUrl: url,
+        });
+    }
+    return { rows, cursor: search.paginationCursors?.find((entry) => entry.pageNumber === pageNumber + 1)?.cursor };
 }
