@@ -1,6 +1,7 @@
 """Fetch public Glassdoor search results through a browserless HTTP session."""
 
 import json
+import os
 import re
 import sys
 import time
@@ -20,7 +21,7 @@ def collect(url, keyword, max_pages):
         return {**result, "error": "Browserless search requires a Glassdoor city search URL."}
 
     cursor = ""
-    with requests.Session(impersonate="chrome136", timeout=12) as session:
+    with requests.Session(impersonate="chrome136", timeout=12, proxy=os.getenv("GLASSDOOR_PROXY_URL") or None) as session:
         for page in range(1, max_pages + 1):
             try:
                 response = session.post(
@@ -56,7 +57,7 @@ def collect(url, keyword, max_pages):
                 search = response.json()["data"]["jobListings"]
                 listings = search["jobListings"]
             except (requests.RequestsError, ValueError, KeyError, TypeError) as error:
-                result["error"] = str(error)
+                result["error"] = str(error) if isinstance(error, ValueError) else "Glassdoor request or response failed"
                 break
 
             result["pages"] += 1

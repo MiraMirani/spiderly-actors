@@ -1,3 +1,4 @@
+import { randomUUID } from 'node:crypto';
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import { fileURLToPath } from 'node:url';
@@ -64,11 +65,18 @@ try {
         }
         const seen = new Set();
         const script = fileURLToPath(new URL('./browserless.py', import.meta.url));
+        const proxy = Actor.isAtHome()
+            ? await Actor.createProxyConfiguration({ groups: ['RESIDENTIAL'], countryCode: 'US' })
+            : undefined;
         for (const url of urls) {
             if (summary.jobs >= maxItems) break;
             const { stdout } = await promisify(execFile)('python3', [
                 script, url, keyword.trim(), String(maxPages),
-            ], { timeout: 85000, maxBuffer: 2 * 1024 * 1024 });
+            ], {
+                timeout: 85000,
+                maxBuffer: 2 * 1024 * 1024,
+                env: { ...process.env, GLASSDOOR_PROXY_URL: await proxy?.newUrl(randomUUID()) ?? '' },
+            });
             const result = JSON.parse(stdout);
             const rows = result.rows.filter((row) => {
                 if (seen.has(row.jobId)) return false;
