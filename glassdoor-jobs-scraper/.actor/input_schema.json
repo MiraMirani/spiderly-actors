@@ -12,12 +12,14 @@
       "enum": [
         "keyword",
         "url",
-        "saved_html"
+        "saved_html",
+        "browserless"
       ],
       "enumTitles": [
         "Keyword and location",
         "Glassdoor search URL",
-        "Saved browser page"
+        "Saved browser page",
+        "Browserless search by city URL"
       ],
       "prefill": "keyword",
       "sectionCaption": "Search method"
@@ -254,7 +256,7 @@
     "maxPages": {
       "title": "Maximum batches per search",
       "type": "integer",
-      "description": "Batch limit for the original direct browser mode used by existing API inputs.",
+      "description": "Batch limit for browserless search and the original direct browser mode.",
       "default": 1,
       "minimum": 1,
       "maximum": 5,

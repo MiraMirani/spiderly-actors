@@ -1,3 +1,6 @@
+import { execFile } from 'node:child_process';
+import { promisify } from 'node:util';
+import { fileURLToPath } from 'node:url';
 import { Actor, log } from 'apify';
 import { chromium } from 'playwright';
 import { cardSelector, origin, parseCards, sampleSearch, searchUrl } from './cards.js';
@@ -27,8 +30,8 @@ try {
         throw new Error('Saved search HTML must be a string.');
     }
     const mode = input.mode ?? (savedHtml?.trim() ? 'saved_html' : input.keyword ? 'keyword' : 'direct');
-    if (!['keyword', 'url', 'saved_html', 'direct'].includes(mode)) throw new Error('Choose a valid search mode.');
-    const urlInputs = searchUrls ?? (mode === 'direct' ? [sampleSearch] : []);
+    if (!['keyword', 'url', 'saved_html', 'direct', 'browserless'].includes(mode)) throw new Error('Choose a valid search mode.');
+    const urlInputs = searchUrls ?? (['direct', 'browserless'].includes(mode) ? [sampleSearch] : []);
     let urls = [];
     if (mode !== 'keyword') {
         if (!Array.isArray(urlInputs) || urlInputs.length < 1 || urlInputs.length > 5) {
@@ -51,6 +54,38 @@ try {
         await Actor.pushData(rows);
         summary.jobs = rows.length;
         log.info('Imported saved Glassdoor jobs', { jobs: rows.length });
+    } else if (mode === 'browserless') {
+        if (!Number.isInteger(maxPages) || maxPages < 1 || maxPages > 5) {
+            throw new Error('Set the search batch limit to a whole number between 1 and 5.');
+        }
+        const keyword = input.keyword ?? (urls.every((url) => url === sampleSearch) ? 'software engineer' : '');
+        if (typeof keyword !== 'string' || !keyword.trim() || keyword.length > 200) {
+            throw new Error('Enter the keyword used in the Glassdoor search URLs.');
+        }
+        const seen = new Set();
+        const script = fileURLToPath(new URL('./browserless.py', import.meta.url));
+        for (const url of urls) {
+            if (summary.jobs >= maxItems) break;
+            const { stdout } = await promisify(execFile)('python3', [
+                script, url, keyword.trim(), String(maxPages),
+            ], { timeout: 85000, maxBuffer: 2 * 1024 * 1024 });
+            const result = JSON.parse(stdout);
+            const rows = result.rows.filter((row) => {
+                if (seen.has(row.jobId)) return false;
+                seen.add(row.jobId);
+                return true;
+            }).slice(0, maxItems - summary.jobs);
+            if (rows.length) await Actor.pushData(rows);
+            summary.jobs += rows.length;
+            summary.searches.push({
+                url, pages: result.pages, jobs: rows.length,
+                status: result.error ? (rows.length ? 'partial' : 'unavailable') : 'ok',
+                ...(result.error && { reason: result.error }),
+            });
+        }
+        if (!summary.jobs && summary.searches.some((search) => search.reason)) {
+            throw new Error(summary.searches.find((search) => search.reason).reason);
+        }
     } else if (mode === 'direct') {
         if (!Number.isInteger(maxPages) || maxPages < 1 || maxPages > 5) {
             throw new Error('Set the direct search batch limit to a whole number between 1 and 5.');

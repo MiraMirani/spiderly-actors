@@ -22,6 +22,37 @@ Choose **Keyword and location**, enter the role and location, then set a result 
 
 Keyword and URL modes run an upstream Apify Actor with a separate charge cap. The search term, location, filters or search URLs for the selected mode are sent to that Actor. Spiderly's own platform usage is separate. Title phrase matching happens after the upstream search and can return fewer rows than the requested limit.
 
+## Browserless city search
+
+Choose **Browserless search by city URL**. Enter the keyword and a Glassdoor city search URL that contains a city ID (`IC` followed by digits). This mode sends HTTP requests directly to Glassdoor using Python and `curl_cffi`.
+
+```json
+{
+  "mode": "browserless",
+  "keyword": "software engineer",
+  "searchUrls": [
+    { "url": "https://www.glassdoor.com/Job/Software-Engineer-New-York-SRCH_KO0%2C17_IL.18%2C26_IC1132348.htm" }
+  ],
+  "maxItems": 100,
+  "maxPages": 4
+}
+```
+
+The local live test returned 100 distinct listings across four pages. Here is a shortened row from that run.
+
+```json
+{
+  "jobId": "1009026513713",
+  "title": "Software Engineers",
+  "company": "Econtenti Inc",
+  "location": "Edison, NJ",
+  "companyRating": 3,
+  "salaryMin": null
+}
+```
+
+Browserless mode returns search summaries and available salary fields. Full descriptions, external application URLs, employer enrichment, and keyword-mode filters are outside the scope of browserless search. Glassdoor may block requests, and the run summary records failed or partial searches.
+
 ## Job and employer details
 
 Live searches include median pay, posting age, job types, skills, and work arrangement when the source supplies them. Turn on **Include full job descriptions** to fetch the full text and formatted HTML, and **Include employer profiles** to fetch company size, industry, headquarters, and rating breakdowns. The upstream run can charge extra for full descriptions. Use the **Jobs**, **Job details**, **Companies**, and **Salaries** output views to browse the data. The full dataset also includes location IDs, sponsored flags, listing tags, and collection timestamps when supplied. Missing details remain empty. Existing API calls can set both detail options explicitly. Saved-page imports continue to use the fields visible on each card.
