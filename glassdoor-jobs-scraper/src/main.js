@@ -75,7 +75,7 @@ try {
             ], {
                 timeout: 85000,
                 maxBuffer: 2 * 1024 * 1024,
-                env: { ...process.env, GLASSDOOR_PROXY_URL: await proxy?.newUrl(randomUUID()) ?? '' },
+                env: { ...process.env, GLASSDOOR_PROXY_URL: await proxy?.newUrl(randomUUID().replaceAll('-', '')) ?? '' },
             });
             const result = JSON.parse(stdout);
             const rows = result.rows.filter((row) => {
