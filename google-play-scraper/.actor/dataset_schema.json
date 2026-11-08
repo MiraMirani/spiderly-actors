@@ -1,0 +1,122 @@
+{
+  "actorSpecification": 1,
+  "fields": {
+    "type": "object",
+    "properties": {
+      "appId": {
+        "type": "string"
+      },
+      "url": {
+        "type": "string"
+      },
+      "language": {
+        "type": "string"
+      },
+      "country": {
+        "type": "string"
+      },
+      "title": {
+        "type": "string"
+      },
+      "developer": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "developerWebsite": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "category": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "contentRating": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "rating": {
+        "type": [
+          "number",
+          "null"
+        ]
+      },
+      "ratingCount": {
+        "type": [
+          "number",
+          "null"
+        ]
+      },
+      "downloads": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "updated": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "price": {
+        "type": [
+          "number",
+          "null"
+        ]
+      },
+      "currency": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "iconUrl": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "description": {
+        "type": [
+          "string",
+          "null"
+        ]
+      }
+    }
+  },
+  "views": {
+    "apps": {
+      "title": "Apps",
+      "transformation": {
+        "fields": [
+          "appId",
+          "title",
+          "developer",
+          "rating",
+          "ratingCount",
+          "downloads",
+          "price",
+          "currency",
+          "url"
+        ]
+      },
+      "display": {
+        "component": "table",
+        "properties": {
+          "url": {
+            "label": "Google Play",
+            "format": "link"
+          }
+        }
+      }
+    }
+  }
+}

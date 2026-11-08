@@ -1,0 +1,13 @@
+{
+  "actorKeyValueStoreSchemaVersion": 1,
+  "title": "Run summary",
+  "collections": {
+    "summary": {
+      "title": "App counts and errors",
+      "key": "SUMMARY",
+      "contentTypes": [
+        "application/json"
+      ]
+    }
+  }
+}
