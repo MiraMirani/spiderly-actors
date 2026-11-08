@@ -169,6 +169,15 @@ export function providerRows(items, urls, phrase, maxItems, { hosted = false } =
         rows.set(jobId, {
             ...(hosted && {
                 companyLogoUrl: glassdoorUrl(item.logoUrl, 'https://media.glassdoor.com', '/sql/'),
+                logoUrl: glassdoorUrl(item.logoUrl, 'https://media.glassdoor.com', '/sql/'),
+                ageInDays: number(item.ageInDays),
+                easyApply: flag(item.easyApply),
+                searchPage: number(item.searchPage),
+                salary: item.salary ? {
+                    p10: number(item.salary.p10),
+                    p50: number(item.salary.p50),
+                    p90: number(item.salary.p90),
+                } : null,
             }),
             jobId, title, jobUrl: jobUrl.href, sourceUrl,
             company: text(item.company),
@@ -185,7 +194,7 @@ export function providerRows(items, urls, phrase, maxItems, { hosted = false } =
             salaryCurrency: text(item.salaryCurrency),
             salaryPeriod: text(item.salaryPeriod),
             salaryIsEstimate: flag(item.salaryIsEstimate),
-            salarySource: item.salaryIsEstimate === true ? 'glassdoor_estimate'
+            salarySource: hosted ? text(item.salarySource) : item.salaryIsEstimate === true ? 'glassdoor_estimate'
                 : item.salaryIsEstimate === false && (item.salaryMin != null || item.salaryMax != null) ? 'employer' : null,
             snippet: text(item.snippet),
             description: text(item.description),

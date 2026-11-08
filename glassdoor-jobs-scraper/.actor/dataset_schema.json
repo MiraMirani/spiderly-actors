@@ -408,17 +408,20 @@
       "transformation": {
         "fields": [
           "title",
+          "companyLogoUrl",
           "company",
           "location",
+          "companyRating",
+          "postedDaysAgo",
+          "easyApplyBadge",
           "salaryMin",
+          "salaryMedian",
           "salaryMax",
           "salaryCurrency",
           "salaryPeriod",
-          "salaryRaw",
-          "companyRating",
-          "postedDaysAgo",
+          "salarySource",
+          "snippet",
           "jobUrl",
-          "postedAt",
           "applyUrl"
         ]
       },
@@ -430,8 +433,12 @@
             "format": "link"
           },
           "applyUrl": {
-            "label": "Glassdoor application link",
+            "label": "Application link",
             "format": "link"
+          },
+          "companyLogoUrl": {
+            "label": "Company logo",
+            "format": "image"
           }
         }
       }
@@ -452,6 +459,7 @@
           "salaryCurrency",
           "salaryPeriod",
           "description",
+          "descriptionError",
           "jobUrl",
           "skills",
           "tags",
