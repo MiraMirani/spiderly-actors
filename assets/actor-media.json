@@ -1,6 +1,6 @@
 {
   "repository": "MiraMirani/spiderly-actors",
-  "assetRevision": "509b9791aaaf9222ecacb92759f1fde194c9d49e",
+  "assetRevision": "33eb5bcb56cf2a23d0b9b9f9c415a499279d0751",
   "defaultImage": "assets/icons/spiderly-large/jobs.png",
   "sites": {
     "finn": "assets/icons/spiderly-large/finn.png",
@@ -8,5 +8,11 @@
     "nav": "assets/icons/spiderly-large/nav.png",
     "jobbnorge": "assets/icons/spiderly-large/jobbnorge-stacked.png"
   },
-  "actors": {}
+  "actors": {
+    "apple-app-store-scraper": "assets/icons/apple-app-store.png",
+    "glassdoor-jobs-scraper": "assets/icons/glassdoor-jobs.png",
+    "google-play-scraper": "assets/icons/google-play.png",
+    "linkedin-companies-scraper": "assets/icons/linkedin-companies.png",
+    "web-traffic-generator": "assets/icons/web-traffic-generator.png"
+  }
 }

@@ -1,17 +1,20 @@
 # Spiderly Actors
 
-All Apify Actors published under the **Spiderly** account, in one repository.
-
-Layout: `site/type/version`
+The **Spiderly** Apify Actor source lives in this repository. Use `main` for the complete project. Each Actor has its own folder.
 
 | Folder | Actor |
 |---|---|
 | `finn/jobs/details` | Finn.no Job Scraper (v1, Cheerio, full detail pages) |
 | `finn/jobs/fast` | Finn.no Job Scraper - Fast, Multi-Keyword (v2) |
 | `linkedin/jobs` | LinkedIn Jobs Scraper - Fast, Multi-Keyword |
+| `linkedin/jobs/details` | LinkedIn Jobs Scraper - Detailed Jobs & Companies |
 | `linkedin/companies` | LinkedIn Companies Scraper - Bulk Company Profiles |
 | `nav/jobs` | NAV Arbeidsplassen Job Scraper - Fast, Multi-Keyword |
 | `jobbnorge/jobs` | Jobbnorge Job Scraper - Fast, Multi-Keyword |
+| `web-traffic-generator` | Web Traffic Generator for Website Testing |
+| `glassdoor-jobs-scraper` | Glassdoor Jobs Scraper |
+| `google-play-scraper` | Google Play App Details Scraper |
+| `apple-app-store-scraper` | Apple App Store Lookup |
 
 Each folder is a self-contained Actor (`.actor/`, `Dockerfile`, `package.json`, `src/`, `test/`).
 Run tests inside a folder with `npm test`; deploy with `apify push` from that folder.
@@ -29,6 +32,6 @@ node scripts/actor-images.mjs --apply
 node scripts/actor-images.mjs --check
 ```
 
-The helper inserts a small icon into every Actor README; CI detects missing or outdated icons. `node scripts/actor-images.mjs --list` shows the PNG and image URL for each Actor. If a new image is added, commit it first and set `assetRevision` to that full commit SHA before refreshing READMEs.
+The helper preserves existing branded README banners and inserts a small icon when a banner is absent. CI checks the README images and icon files. `node scripts/actor-images.mjs --list` shows the PNG and image URL for each Actor. If a new image is added, commit it first and set `assetRevision` to that full commit SHA before refreshing READMEs.
 
 README images and Apify avatars are separate. Upload the selected PNG in Apify Console under **Publishing → Display information → Icon**, then save. This only updates the Actor's image and does not require publishing or rebuilding the Actor.

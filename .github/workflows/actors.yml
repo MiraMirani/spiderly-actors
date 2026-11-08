@@ -18,7 +18,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        actor: [finn/jobs/details, finn/jobs/fast, linkedin/jobs, linkedin/jobs/details, nav/jobs, jobbnorge/jobs]
+        actor: [finn/jobs/details, finn/jobs/fast, linkedin/jobs, linkedin/jobs/details, linkedin/companies, nav/jobs, jobbnorge/jobs, web-traffic-generator, glassdoor-jobs-scraper, google-play-scraper, apple-app-store-scraper]
     defaults:
       run:
         working-directory: ${{ matrix.actor }}
@@ -27,8 +27,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - run: npm ci --ignore-scripts --no-audit --no-fund
-        if: matrix.actor == 'linkedin/jobs/details'
-      - run: npm install --ignore-scripts --no-audit --no-fund
-        if: matrix.actor == 'finn/jobs/details'
+      - run: |
+          if [ -f package-lock.json ]; then
+            npm ci --ignore-scripts --no-audit --no-fund
+          else
+            npm install --ignore-scripts --no-audit --no-fund
+          fi
       - run: npm test

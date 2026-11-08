@@ -40,6 +40,8 @@ for (const actorFile of actors) {
         console.log(JSON.stringify({ actor: actor.name, folder, image, pictureUrl }));
         continue;
     }
+    const banner = content.split('\n', 1)[0].match(/!\[[^\]]*\]\(https:\/\/raw\.githubusercontent\.com\/([^/]+\/[^/]+)\/([a-f0-9]{40})\/(assets\/banners\/[a-z0-9_.-]+\.png)\)/i);
+    if (banner?.[1] === catalog.repository && (await stat(resolve(root, banner[3]))).isFile()) continue;
     const stripped = content.replace(managed, '');
     const headingEnd = stripped.indexOf('\n');
     const desired = headingEnd >= 0 ? `${stripped.slice(0, headingEnd + 1)}\n${block}${stripped.slice(headingEnd + 1).replace(/^\n+/, '')}` : `${stripped}\n\n${block}`;

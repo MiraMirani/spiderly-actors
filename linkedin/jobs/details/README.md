@@ -1,7 +1,7 @@
 # LinkedIn Jobs Scraper — Detailed Jobs & Companies
 
 <!-- actor-cover:start -->
-![LinkedIn Jobs Scraper — Detailed Jobs & Companies | Spiderly — Spiderly](https://raw.githubusercontent.com/MiraMirani/spiderly-actors/86aefbfdf313e9f2898dad5a44408a5f4d62316d/assets/actors/linkedin-jobs.png)
+<img src="https://raw.githubusercontent.com/MiraMirani/spiderly-actors/33eb5bcb56cf2a23d0b9b9f9c415a499279d0751/assets/icons/spiderly-large/linkedin.png" alt="LinkedIn Jobs Scraper — Detailed Jobs &amp; Companies | Spiderly — Spiderly" width="128" height="128">
 <!-- actor-cover:end -->
 
 Collect public LinkedIn job listings, their descriptions and optional employer profiles. Search several job titles across several locations, or provide search, job and company URLs. Results are deduplicated across the run and can be exported from Apify as JSON, CSV or Excel.

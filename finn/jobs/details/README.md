@@ -1,7 +1,7 @@
 # Finn.no Job Scraper v1
 
 <!-- actor-cover:start -->
-<img src="https://raw.githubusercontent.com/MiraMirani/spiderly-actors/509b9791aaaf9222ecacb92759f1fde194c9d49e/assets/icons/spiderly-large/finn.png" alt="Finn.no Job Scraper — Spiderly" width="128" height="128">
+<img src="https://raw.githubusercontent.com/MiraMirani/spiderly-actors/33eb5bcb56cf2a23d0b9b9f9c415a499279d0751/assets/icons/spiderly-large/finn.png" alt="Finn.no Job Scraper — Spiderly" width="128" height="128">
 <!-- actor-cover:end -->
 
 Scrape job ads from **Finn.no**, Norway's largest job board, by keyword, location or search URL. Get titles, employers, locations, deadlines and full descriptions as JSON, CSV or Excel.
