@@ -14,14 +14,16 @@
         "url",
         "saved_html",
         "browserless",
-        "direct"
+        "direct",
+        "hosted_playwright"
       ],
       "enumTitles": [
         "Keyword and location",
         "Glassdoor search URL",
         "Saved browser page",
         "Browserless search by city URL",
-        "Playwright search by URL"
+        "Playwright search by URL",
+        "Apify Playwright search by city URL"
       ],
       "prefill": "keyword",
       "sectionCaption": "Search method"

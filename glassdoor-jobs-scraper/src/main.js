@@ -1,3 +1,4 @@
+import { hostedPlaywrightActor, hostedPlaywrightInput } from './hosted-playwright.js';
 import { randomUUID } from 'node:crypto';
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
@@ -31,8 +32,8 @@ try {
         throw new Error('Saved search HTML must be a string.');
     }
     const mode = input.mode ?? (savedHtml?.trim() ? 'saved_html' : input.keyword ? 'keyword' : 'direct');
-    if (!['keyword', 'url', 'saved_html', 'direct', 'browserless'].includes(mode)) throw new Error('Choose a valid search mode.');
-    const urlInputs = searchUrls ?? (['direct', 'browserless'].includes(mode) ? [sampleSearch] : []);
+    if (!['keyword', 'url', 'saved_html', 'direct', 'browserless', 'hosted_playwright'].includes(mode)) throw new Error('Choose a valid search mode.');
+    const urlInputs = searchUrls ?? (['direct', 'browserless', 'hosted_playwright'].includes(mode) ? [sampleSearch] : []);
     let urls = [];
     if (mode !== 'keyword') {
         if (!Array.isArray(urlInputs) || urlInputs.length < 1 || urlInputs.length > 5) {
@@ -100,14 +101,18 @@ try {
         }
         await collectLive(urls, maxItems, maxPages, proxyConfiguration, input.keyword);
     } else {
-        const upstreamInput = providerInput(input, mode, urls, maxItems);
+        const hosted = mode === 'hosted_playwright';
+        const upstreamInput = hosted
+            ? hostedPlaywrightInput(urls, input.keyword ?? 'software engineer', maxItems, maxPages)
+            : providerInput(input, mode, urls, maxItems);
         if (!Actor.isAtHome()) throw new Error('Run keyword and URL searches on Apify. Saved HTML is supported locally.');
         const { providerBudgetUsd = 0.30 } = input;
         if (!Number.isFinite(providerBudgetUsd) || providerBudgetUsd < 0.01 || providerBudgetUsd > 1) {
             throw new Error('Set the upstream budget between $0.01 and $1.');
         }
         const options = providerRunOptions(upstreamInput, providerBudgetUsd, Actor.getEnv().timeoutAt);
-        const source = liveProvider(input, mode, upstreamInput);
+        const source = hosted ? { actor: hostedPlaywrightActor, input: upstreamInput } : liveProvider(input, mode, upstreamInput);
+        if (hosted) options.memory = 1024;
         summary.providerActor = source.actor;
         summary.requestedJobs = maxItems;
         summary.providerTimeoutSecs = options.timeout;
@@ -129,6 +134,9 @@ try {
         summary.jobs = rows.length;
         summary.upstreamRows = items.length;
         if (run.status !== 'SUCCEEDED') throw new Error('Upstream search ended with status ' + run.status + '. See SUMMARY.');
+        if (hosted && !rows.length && items.some((item) => item['#error'])) {
+            throw new Error('Playwright could not collect listings. See the upstream run in SUMMARY.');
+        }
         if (!rows.length) log.info('No usable jobs matched this search. See SUMMARY.');
     }
 } catch (error) {

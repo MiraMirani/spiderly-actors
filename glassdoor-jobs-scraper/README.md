@@ -117,3 +117,18 @@ The dataset also includes `snippet` and `sourceUrl`. Missing optional fields use
 Live runs report the upstream run ID, timeout, and memory in **SUMMARY**, plus the upstream charge when Apify supplies it. That charge excludes the parent Actor's platform usage. Enriched searches get more memory and time, subject to the parent run deadline. If the upstream run times out, Spiderly saves any available results and reports the failure.
 
 Open **SUMMARY** in the key-value store for counts by search and any errors. The Actor stops collecting from a search if Glassdoor restricts access. Direct and saved-page runs fail if they collect zero rows. An upstream search that completes successfully can return an empty dataset. Results are limited to public search cards and contain short previews when available.
+
+## Apify Playwright search
+
+Choose **Apify Playwright search by city URL** to run the search through Apify's official Playwright Scraper. Use an unfiltered Glassdoor city search URL and its matching keyword. If you omit the URL, the example searches New York for software engineer jobs.
+
+```json
+{
+  "mode": "hosted_playwright",
+  "keyword": "software engineer",
+  "maxItems": 20,
+  "maxPages": 1
+}
+```
+
+The upstream run uses Chrome and a US residential proxy. Its compute and proxy usage are billed separately from this Actor. The run summary records the upstream run ID. This mode collects search listings and available salary data.
