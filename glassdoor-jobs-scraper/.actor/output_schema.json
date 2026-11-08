@@ -2,11 +2,6 @@
   "actorOutputSchemaVersion": 1,
   "title": "Glassdoor job results",
   "properties": {
-    "summary": {
-      "type": "string",
-      "title": "Run summary",
-      "template": "{{links.apiDefaultKeyValueStoreUrl}}/records/SUMMARY"
-    },
     "jobs": {
       "type": "string",
       "title": "Job listings",
